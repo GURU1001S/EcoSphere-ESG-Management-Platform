@@ -1,0 +1,6 @@
+# Placeholder .gitignore
+
+node_modules/
+dist/
+__pycache__/
+.env
