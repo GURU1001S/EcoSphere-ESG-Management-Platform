@@ -2,12 +2,16 @@
 <odoo>
     <record id="eco_badge_green_starter" model="eco.badge">
         <field name="name">Green Starter</field>
-        <field name="criteria">Complete first sustainability challenge</field>
-        <field name="points">50</field>
+        <field name="description">Complete your first sustainability challenge</field>
+        <field name="rarity">common</field>
+        <field name="unlock_rule">challenge_count</field>
+        <field name="unlock_value">1</field>
     </record>
     <record id="eco_badge_climate_champion" model="eco.badge">
         <field name="name">Climate Champion</field>
-        <field name="criteria">Reduce department emissions by 10% year-over-year</field>
-        <field name="points">150</field>
+        <field name="description">Earn an immense amount of points through green initiatives</field>
+        <field name="rarity">epic</field>
+        <field name="unlock_rule">xp_threshold</field>
+        <field name="unlock_value">1500</field>
     </record>
 </odoo>
