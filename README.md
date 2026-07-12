@@ -40,13 +40,6 @@ No manual ESG data entry. No separate dashboard. No integration middleware.
 
 ---
 
-## Demo
-
-[![Demo Video](https://img.shields.io/badge/Watch%20Demo-Loom-purple?style=for-the-badge)](YOUR_LOOM_LINK)
-
-![ESG Dashboard](static/description/screenshots/dashboard.png)
-
----
 
 ## Core Modules
 
@@ -225,17 +218,6 @@ docker-compose up -d
 
 ---
 
-## Screenshots
-
-| ESG Dashboard                                              | Challenge Board                                              |
-| ---------------------------------------------------------- | ------------------------------------------------------------ |
-| ![Dashboard](static/description/screenshots/dashboard.png) | ![Challenges](static/description/screenshots/challenges.png) |
-
-| Employee Profile                                       | Compliance Tracker                                           |
-| ------------------------------------------------------ | ------------------------------------------------------------ |
-| ![Profile](static/description/screenshots/profile.png) | ![Compliance](static/description/screenshots/compliance.png) |
-
----
 
 ## Reports
 
