@@ -9,13 +9,13 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 class EcoChallenge(models.Model):
-    _name = 'eco.challenge'
+    _name = 'esg.challenge'
     _description = 'ESG Challenge'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 
     name = fields.Char(string='Name', required=True, tracking=True)
-    category_id = fields.Many2one('eco.category', string='Category', domain=[('type', '=', 'challenge')], tracking=True)
+    category_id = fields.Many2one('esg.category', string='Category', domain=[('type', '=', 'challenge')], tracking=True)
     description = fields.Text(string='Description')
     xp_reward = fields.Integer(string='Base XP Reward', default=0, tracking=True)
     difficulty = fields.Selection([
@@ -25,7 +25,7 @@ class EcoChallenge(models.Model):
     ], string='Difficulty', default='easy', tracking=True)
     evidence_required = fields.Boolean(string='Evidence Required', default=False, tracking=True)
     deadline = fields.Date(string='Deadline', tracking=True)
-    department_id = fields.Many2one('eco.department', string='Department', tracking=True)
+    department_id = fields.Many2one('esg.department', string='Department', tracking=True)
     status = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -34,7 +34,7 @@ class EcoChallenge(models.Model):
         ('archived', 'Archived')
     ], string='Status', default='draft', required=True, tracking=True)
     
-    participation_ids = fields.One2many('eco.challenge.participation', 'challenge_id', string='Participations')
+    participation_ids = fields.One2many('esg.challenge.participation', 'challenge_id', string='Participations')
 
     # R&D Intelligence Additions
     completion_rate = fields.Float(string='Completion Rate (%)', compute='_compute_completion_metrics', store=True)
@@ -55,7 +55,7 @@ class EcoChallenge(models.Model):
                 approved = parts.filtered(lambda p: p.approval_status == 'approved')
                 approved_count = len(approved)
             except AttributeError:
-                approved = self.env['eco.challenge.participation']
+                approved = self.env['esg.challenge.participation']
                 approved_count = 0
 
             challenge.completion_rate = (approved_count / float(total)) * 100.0 if total > 0 else 0.0
@@ -111,36 +111,6 @@ class EcoChallenge(models.Model):
             rec.status = 'archived'
         return True
 
-    @api.model
-    def _call_ai(self, prompt):
-        api_key = self.env['ir.config_parameter'].sudo().get_param('ecosphere.grok_api_key')
-        if not api_key:
-            raise UserError("Grok API key is missing. Please add 'ecosphere.grok_api_key' in Settings > System Parameters.")
-            
-        url = "https://api.groq.com/openai/v1/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "llama-3.1-8b-instant",
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.7
-        }
-        
-        try:
-            response = requests.post(url, headers=headers, json=payload, timeout=15)
-            if response.status_code != 200:
-                raise UserError(f"API Error {response.status_code}: {response.text}")
-            response.raise_for_status()
-            res_json = response.json()
-            return res_json['choices'][0]['message']['content']
-        except Exception as e:
-            if isinstance(e, UserError):
-                raise e
-            _logger.error(f"Grok API failed: {str(e)}")
-            raise UserError(f"Failed to communicate with Grok API: {str(e)}")
-
     def action_ai_generate(self):
         department = False
         if self and getattr(self[0], 'department_id', False):
@@ -148,66 +118,56 @@ class EcoChallenge(models.Model):
         else:
             active_id = self.env.context.get('active_id')
             active_model = self.env.context.get('active_model')
-            if active_model == 'eco.department' and active_id:
-                department = self.env['eco.department'].browse(active_id)
+            if active_model == 'esg.department' and active_id:
+                department = self.env['esg.department'].browse(active_id)
             if not department:
                 emp = self.env.user.employee_id
-                department = getattr(emp, 'department_id', False)
+                department = getattr(emp, 'esg_department_id', False) or getattr(emp, 'department_id', False)
                 if not department:
-                    department = self.env['eco.department'].search([], limit=1)
+                    department = self.env['esg.department'].search([], limit=1)
                     
         if not department:
             raise UserError("No department found to analyze.")
             
-        env_s = getattr(department, 'env_score', 0)
-        soc_s = getattr(department, 'social_score', 0)
-        gov_s = getattr(department, 'gov_score', 0)
-        
-        weakest = "Unknown"
-        if hasattr(department, '_get_weakest_pillar'):
-            try:
-                weakest = department._get_weakest_pillar()
-            except Exception:
-                pass
-                
-        prompt = (
-            f"You are an ESG expert. The '{department.name}' department has scores: "
-            f"Environmental: {env_s}, Social: {soc_s}, Governance: {gov_s}. "
-            f"Their weakest pillar is {weakest}. "
-            f"Generate exactly 3 new challenges targeting this weakness. "
-            f"Respond strictly in JSON format as an array of 3 objects with keys: "
-            f"'name', 'description', 'xp_reward' (integer between 10-100), 'difficulty' ('easy', 'medium', or 'hard'), and 'ai_rationale' (string explaining why). "
-            f"Do not include markdown fences or other text."
-        )
-        
-        res_text = self._call_ai(prompt)
-        
-        res_text = res_text.strip()
-        if res_text.startswith("```json"):
-            res_text = res_text[7:]
-        elif res_text.startswith("```"):
-            res_text = res_text[3:]
-        if res_text.endswith("```"):
-            res_text = res_text[:-3]
-        res_text = res_text.strip()
-        
-        try:
-            data = json.loads(res_text)
-        except Exception as e:
-            _logger.error(f"Failed to parse Grok JSON. Raw response:\n{res_text}")
-            raise UserError(f"Grok returned invalid JSON. Raw response logged. Error: {str(e)}")
+        score_rec = self.env['esg.department.score'].search([('department_id', '=', department.id)], order='period_date desc', limit=1)
+        if not score_rec:
+            env_s, soc_s, gov_s = 0, 0, 0
+        else:
+            env_s = score_rec.env_score
+            soc_s = score_rec.social_score
+            gov_s = score_rec.gov_score
             
-        if not isinstance(data, list):
-            raise UserError("Grok did not return a JSON array.")
-            
-        created = self.env['eco.challenge']
+        scores = {'Environmental': env_s, 'Social': soc_s, 'Governance': gov_s}
+        weakest = min(scores, key=scores.get) if any(scores.values()) else 'Environmental'
+        
+        templates = {
+            'Environmental': [
+                {'name': 'Reduce Paper Waste', 'description': 'Print 50% less pages this week.', 'xp_reward': 30, 'difficulty': 'easy'},
+                {'name': 'Energy Saver', 'description': 'Turn off all monitors before leaving for 5 days.', 'xp_reward': 40, 'difficulty': 'medium'},
+                {'name': 'Zero Waste Lunch', 'description': 'Bring lunch in reusable containers for a week.', 'xp_reward': 50, 'difficulty': 'hard'}
+            ],
+            'Social': [
+                {'name': 'Community Volunteer', 'description': 'Log 2 hours of volunteering.', 'xp_reward': 60, 'difficulty': 'medium'},
+                {'name': 'Wellness Walk', 'description': 'Participate in the department wellness walk.', 'xp_reward': 20, 'difficulty': 'easy'},
+                {'name': 'Mentorship Session', 'description': 'Host a 1 hour mentorship session.', 'xp_reward': 80, 'difficulty': 'hard'}
+            ],
+            'Governance': [
+                {'name': 'Policy Review', 'description': 'Review and acknowledge all pending policies.', 'xp_reward': 30, 'difficulty': 'easy'},
+                {'name': 'Security Training', 'description': 'Complete the cybersecurity module with 100%.', 'xp_reward': 50, 'difficulty': 'medium'},
+                {'name': 'Audit Prep', 'description': 'Assist in organizing files for the upcoming audit.', 'xp_reward': 100, 'difficulty': 'hard'}
+            ]
+        }
+        
+        data = templates.get(weakest, templates['Environmental'])
+        
+        created = self.env['esg.challenge']
         for item in data:
             vals = {
-                'name': item.get('name', 'AI Generated Challenge'),
-                'description': item.get('description', ''),
-                'xp_reward': int(item.get('xp_reward', 20)),
-                'difficulty': item.get('difficulty', 'medium'),
-                'ai_rationale': item.get('ai_rationale', ''),
+                'name': item['name'],
+                'description': item['description'],
+                'xp_reward': item['xp_reward'],
+                'difficulty': item['difficulty'],
+                'ai_rationale': f'System generated to target weakest pillar: {weakest}.',
                 'ai_generated': True,
                 'status': 'draft',
                 'department_id': department.id
@@ -218,8 +178,8 @@ class EcoChallenge(models.Model):
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'AI Challenges Generated',
-                'message': f'Successfully generated 3 draft challenges for {department.name}.',
+                'title': 'Challenges Generated',
+                'message': f'Successfully generated 3 draft {weakest} challenges for {department.name}.',
                 'type': 'success',
                 'next': {'type': 'ir.actions.client', 'tag': 'reload'}
             }
@@ -229,11 +189,12 @@ class EcoChallenge(models.Model):
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    esg_department_id = fields.Many2one('esg.department', string='ESG Department')
     xp = fields.Integer(string='XP', default=0, tracking=True)
     points = fields.Integer(string='Points', default=0, tracking=True)
-    badge_ids = fields.Many2many('eco.badge', string='Badges')
+    badge_ids = fields.Many2many('esg.badge', string='Badges')
     
-    challenge_participation_ids = fields.One2many('eco.challenge.participation', 'employee_id', string='Participations')
+    challenge_participation_ids = fields.One2many('esg.challenge.participation', 'employee_id', string='Participations')
     
     # NOTE: These compute fields depend on challenge_participation.py existing!
     completed_challenge_count = fields.Integer(string='Completed Challenges', compute='_compute_completed_challenge_count', store=True)
@@ -255,7 +216,7 @@ class HrEmployee(models.Model):
         ('governance', 'Governance')
     ], string='Strongest Pillar')
     
-    recommended_challenge_ids = fields.Many2many('eco.challenge', string='Recommended Challenges')
+    recommended_challenge_ids = fields.Many2many('esg.challenge', string='Recommended Challenges')
 
     def _compute_archetype(self):
         for emp in self:
@@ -302,7 +263,7 @@ class HrEmployee(models.Model):
 
     def action_recommend_challenges(self):
         for emp in self:
-            active_challenges = self.env['eco.challenge'].search([('status', '=', 'active')])
+            active_challenges = self.env['esg.challenge'].search([('status', '=', 'active')])
             try:
                 completed = emp.challenge_participation_ids.filtered(lambda p: p.approval_status == 'approved').mapped('challenge_id')
                 available = active_challenges - completed
@@ -312,35 +273,11 @@ class HrEmployee(models.Model):
             if not available:
                 raise UserError("No active challenges available to recommend.")
                 
-            challenge_list = "\n".join([f"- ID {c.id}: {c.name} (Difficulty: {c.difficulty}, XP: {c.dynamic_xp or c.xp_reward})" for c in available])
-            
-            prompt = (
-                f"You are an AI career coach. Recommend the top 3 challenges for employee '{emp.name}' "
-                f"who has a sentiment of '{emp.sentiment_tag}' and strongest pillar '{emp.strongest_pillar}'.\n"
-                f"Here are the available challenges:\n{challenge_list}\n"
-                f"Respond strictly in JSON format as a list of integers representing the IDs of the 3 recommended challenges. "
-                f"Example: [1, 5, 8]. No markdown."
-            )
-            
-            res_text = self.env['eco.challenge']._call_ai(prompt)
-            
-            res_text = res_text.strip()
-            if res_text.startswith("```json"):
-                res_text = res_text[7:]
-            elif res_text.startswith("```"):
-                res_text = res_text[3:]
-            if res_text.endswith("```"):
-                res_text = res_text[:-3]
-            res_text = res_text.strip()
-            
-            try:
-                data = json.loads(res_text)
-            except Exception as e:
-                _logger.error(f"Grok JSON Error: {res_text}")
-                raise UserError("Grok returned invalid JSON.")
-                
-            if not isinstance(data, list):
-                raise UserError("Expected a list of IDs from Grok.")
+            # Local recommendation: pick up to 3 random available challenges
+            import random
+            available_list = available.ids
+            random.shuffle(available_list)
+            data = available_list[:3]
                 
             emp.recommended_challenge_ids = [(6, 0, data)]
             
