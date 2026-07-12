@@ -88,33 +88,25 @@ Behavioral incentive system that adapts to each employee.
 - Multi-dimensional badge system with rarity tiers and progression families
 - XP-based leaderboards at employee and department level
 - Personalized reward catalog — adapts visibility based on engagement state
-- AI generates targeted challenges per department based on ESG weakness
 
 ---
 
-## AI Features
+## Automated Features
 
-EcoSphere uses Groq (Llama 3.1) as an embedded intelligence layer.
+EcoSphere uses an embedded deterministic intelligence layer.
 Three features. Each independently useful. Together they form a system.
 
 ### Challenge Recommender
 
-Analyzes each employee's participation history, sentiment tag, and their
-department's weakest ESG pillar. Recommends 3 challenges most likely to
-drive meaningful engagement for that specific employee.
+Analyzes each employee's participation history and recommends challenges most likely to drive meaningful engagement for that specific employee.
 
 ### Challenge Auto-Generator
 
-Takes a department's current ESG scores and generates 3 contextually
-relevant sustainability challenges targeting the weakest pillar.
-Challenges are created as Draft records, ready for manager review.
+Takes a department's current ESG scores and automatically generates 3 contextually relevant sustainability challenges targeting the weakest pillar using pre-defined operational templates.
 
 ### Impact Synthesizer
 
-When a CSR activity completes, the AI reads every participant's
-self-reported impact, synthesizes them into a 3-sentence organizational
-impact summary, and stores it on the activity record.
-Management gets qualitative ESG intelligence from ground-level data.
+When a CSR activity completes, the system reads every participant's self-reported impact and automatically synthesizes them into an organization-wide impact digest stored on the activity record.
 
 ---
 
@@ -185,7 +177,7 @@ eco.department_score         Aggregated ESG performance per department
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/GURU1001S/EcoSphere-ESG-Management-Platform
+git clone https://github.com/EcoSphere-Team/EcoSphere-ESG-Management-Platform
 cd EcoSphere-ESG-Management-Platform
 
 # 2. Copy module to your Odoo addons path
@@ -207,10 +199,9 @@ docker run -d --name odoo \
 # Settings → Activate Developer Mode
 # Apps → Update App List → Search "EcoSphere" → Install
 
-# 5. Configure AI features
+# 5. Configure Settings
 # Enable developer mode: Settings → Activate Developer Mode
-# Go to Settings → Technical → System Parameters
-# Add 'ecosphere.grok_api_key' and paste your Groq API key
+# Go to Settings → EcoSphere Settings
 # Enable: Auto Emission Calculation, Badge Auto-Award
 ```
 
@@ -230,7 +221,6 @@ docker-compose up -d
 | Auto Emission Calculation | Creates carbon records on PO confirm      | OFF      |
 | Evidence Required         | Blocks approval without proof upload      | OFF      |
 | Badge Auto-Award          | Awards badges on XP threshold cross       | ON       |
-| Groq API Key            | Required for AI features                  | —        |
 | ESG Weights               | Environmental / Social / Governance split | 40/30/30 |
 
 ---
@@ -272,8 +262,8 @@ Odoo 17
         │       │     ├── Workflow Engine (state transitions)
         │       │     └── Business Rules
         │       │
-        │       └── AI Integration
-        │             └── Groq / Llama 3.1 API
+        │       └── Automated Intelligence
+        │             └── Offline Heuristic Engine
         │                 (challenge generation, feedback, ESG insights)
         │
         ├── Views (XML)
@@ -298,8 +288,8 @@ Odoo 17
 | ------------------ | ---------------------- | -------------------------------------- |
 | Carbon tracking    | Manual entry form      | Auto from PO confirmation              |
 | Gamification       | Flat XP + badges       | Adaptive XP, rarity tiers, archetypes  |
-| Challenge creation | Manual by admin        | AI-generated from ESG weakness         |
-| Points system      | Flat attendance points | Quality-weighted via AI impact scoring |
+| Challenge creation | Manual by admin        | Auto-generated from ESG weakness       |
+| Points system      | Flat attendance points | Quality-weighted via impact heuristics |
 | Reward catalog     | Same for everyone      | Adapts to employee engagement state    |
 | ESG reports        | Manual compilation     | Live from operational data             |
 | Odoo integration   | External tool / iframe | Native module, same data layer         |
