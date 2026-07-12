@@ -1,11 +1,9 @@
-from odoo import fields, models
+from odoo import models, fields
 
+class EmissionFactor(models.Model):
+    _name = "esg.emission.factor"
+    _description = "Emission Factor"
 
-class EcoEmissionFactor(models.Model):
-    _name = 'eco.emission.factor'
-    _description = 'Emission Factor'
-
-    name = fields.Char(required=True)
-    source = fields.Char()
-    factor = fields.Float(required=True)
-    unit = fields.Char(default='kg CO2e')
+    name = fields.Char(string="Name", required=True)
+    factor_value = fields.Float(string="Factor Value", required=True)
+    unit_of_measure = fields.Char(string="Unit of Measure")
