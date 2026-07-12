@@ -48,5 +48,12 @@
             <field name="padding">4</field>
         </record>
 
+        <record id="seq_carbon_transaction" model="ir.sequence">
+            <field name="name">Carbon Transaction Sequence</field>
+            <field name="code">carbon.transaction</field>
+            <field name="prefix">CAR/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
     </data>
 </odoo>

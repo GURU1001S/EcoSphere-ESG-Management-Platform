@@ -8,10 +8,13 @@ access_esg_csr_activity,esg.csr.activity,model_esg_csr_activity,,1,1,1,1
 access_esg_employee_participation,esg.employee.participation,model_esg_employee_participation,,1,1,1,1
 access_esg_challenge,esg.challenge,model_esg_challenge,,1,1,1,1
 access_esg_challenge_participation,esg.challenge.participation,model_esg_challenge_participation,,1,1,1,1
+access_esg_badge_family,esg.badge.family,model_esg_badge_family,,1,1,1,1
 access_esg_badge,esg.badge,model_esg_badge,,1,1,1,1
+access_esg_reward,esg.reward,model_esg_reward,,1,1,1,1
+access_esg_reward_redemption,esg.reward.redemption,model_esg_reward_redemption,,1,1,1,1
 access_esg_policy,esg.policy,model_esg_policy,,1,1,1,1
 access_esg_policy_acknowledgement,esg.policy.acknowledgement,model_esg_policy_acknowledgement,,1,1,1,1
 access_esg_audit,esg.audit,model_esg_audit,,1,1,1,1
 access_esg_compliance_issue,esg.compliance.issue,model_esg_compliance_issue,,1,1,1,1
 access_esg_department_score,esg.department.score,model_esg_department_score,,1,1,1,1
-access_eco_custom_report_wizard,eco.custom.report.wizard,model_eco_custom_report_wizard,,1,1,0,0
+access_eco_custom_report_wizard,eco.custom.report.wizard,model_eco_custom_report_wizard,,1,1,1,0

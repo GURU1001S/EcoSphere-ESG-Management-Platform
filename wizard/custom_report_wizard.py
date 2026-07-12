@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 import io
 import base64
 try:
@@ -26,12 +27,12 @@ class EcoCustomReportWizard(models.TransientModel):
 
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')
-    department_id = fields.Many2one('eco.department', string='Department')
+    department_id = fields.Many2one('esg.department', string='Department')
 
     # 2. Dynamic/Conditional Filters
     employee_id = fields.Many2one('hr.employee', string='Employee')
-    challenge_id = fields.Many2one('eco.challenge', string='Challenge')
-    category_id = fields.Many2one('eco.category', string='ESG Category')
+    challenge_id = fields.Many2one('esg.challenge', string='Challenge')
+    category_id = fields.Many2one('esg.category', string='ESG Category')
 
     # 3. Export Handlers
     state = fields.Selection([('draft', 'Draft'), ('done', 'Done')], default='draft')
@@ -48,6 +49,9 @@ class EcoCustomReportWizard(models.TransientModel):
             return self._generate_excel()
 
     def _generate_excel(self):
+        if xlsxwriter is None:
+            raise UserError("The xlsxwriter Python package is required to export Excel reports.")
+
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet('ESG Export')

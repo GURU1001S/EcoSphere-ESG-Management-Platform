@@ -4,8 +4,8 @@
     <!-- ECO.CSR.ACTIVITY VIEWS                         -->
     <!-- ============================================== -->
     <record id="view_eco_csr_activity_form" model="ir.ui.view">
-        <field name="name">eco.csr.activity.form</field>
-        <field name="model">eco.csr.activity</field>
+        <field name="name">esg.csr.activity.form</field>
+        <field name="model">esg.csr.activity</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -66,8 +66,8 @@
     </record>
 
     <record id="view_eco_csr_activity_kanban" model="ir.ui.view">
-        <field name="name">eco.csr.activity.kanban</field>
-        <field name="model">eco.csr.activity</field>
+        <field name="name">esg.csr.activity.kanban</field>
+        <field name="model">esg.csr.activity</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_mobile">
                 <field name="name"/>
@@ -98,8 +98,8 @@
     </record>
 
     <record id="view_eco_csr_activity_tree" model="ir.ui.view">
-        <field name="name">eco.csr.activity.tree</field>
-        <field name="model">eco.csr.activity</field>
+        <field name="name">esg.csr.activity.tree</field>
+        <field name="model">esg.csr.activity</field>
         <field name="arch" type="xml">
             <tree string="CSR Activities">
                 <field name="name"/>
@@ -115,8 +115,8 @@
     <!-- ECO.EMPLOYEE.PARTICIPATION VIEWS               -->
     <!-- ============================================== -->
     <record id="view_eco_employee_participation_form" model="ir.ui.view">
-        <field name="name">eco.employee.participation.form</field>
-        <field name="model">eco.employee.participation</field>
+        <field name="name">esg.employee.participation.form</field>
+        <field name="model">esg.employee.participation</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -160,8 +160,8 @@
     </record>
 
     <record id="view_eco_employee_participation_tree" model="ir.ui.view">
-        <field name="name">eco.employee.participation.tree</field>
-        <field name="model">eco.employee.participation</field>
+        <field name="name">esg.employee.participation.tree</field>
+        <field name="model">esg.employee.participation</field>
         <field name="arch" type="xml">
             <tree string="CSR Participations">
                 <field name="employee_id"/>
@@ -243,13 +243,13 @@
     <!-- ============================================== -->
     <record id="action_eco_csr_activity" model="ir.actions.act_window">
         <field name="name">CSR Activities</field>
-        <field name="res_model">eco.csr.activity</field>
+        <field name="res_model">esg.csr.activity</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
     <record id="action_eco_employee_participation" model="ir.actions.act_window">
         <field name="name">Employee Participations</field>
-        <field name="res_model">eco.employee.participation</field>
+        <field name="res_model">esg.employee.participation</field>
         <field name="view_mode">tree,form</field>
     </record>
 

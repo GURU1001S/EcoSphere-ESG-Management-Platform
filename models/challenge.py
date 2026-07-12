@@ -133,9 +133,9 @@ class EcoChallenge(models.Model):
         if not score_rec:
             env_s, soc_s, gov_s = 0, 0, 0
         else:
-            env_s = score_rec.env_score
+            env_s = score_rec.environmental_score
             soc_s = score_rec.social_score
-            gov_s = score_rec.gov_score
+            gov_s = score_rec.governance_score
             
         scores = {'Environmental': env_s, 'Social': soc_s, 'Governance': gov_s}
         weakest = min(scores, key=scores.get) if any(scores.values()) else 'Environmental'

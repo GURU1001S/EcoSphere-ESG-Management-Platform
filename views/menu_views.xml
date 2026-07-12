@@ -5,5 +5,6 @@
     <menuitem id="menu_eco_social" name="Social" parent="menu_eco_root" sequence="2"/>
     <menuitem id="menu_eco_governance" name="Governance" parent="menu_eco_root" sequence="3"/>
     <menuitem id="menu_eco_gamification" name="Gamification" parent="menu_eco_root" sequence="4"/>
-    <menuitem id="menu_eco_settings" name="Settings" parent="menu_eco_root" sequence="5"/>
+    <menuitem id="menu_eco_reports" name="Reports" parent="menu_eco_root" sequence="5"/>
+    <menuitem id="menu_eco_settings" name="Settings" parent="menu_eco_root" sequence="6"/>
 </odoo>

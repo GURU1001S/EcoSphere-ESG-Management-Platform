@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="eco_department_main" model="eco.department">
+    <record id="eco_department_main" model="esg.department">
         <field name="name">Global Operations</field>
     </record>
-    <record id="eco_category_energy" model="eco.category">
+    <record id="eco_category_energy" model="esg.category">
         <field name="name">Energy</field>
-        <field name="description">Energy usage and efficiency</field>
+        <field name="type">challenge</field>
     </record>
-    <record id="eco_challenge_recycle" model="eco.challenge">
+    <record id="eco_challenge_recycle" model="esg.challenge">
         <field name="name">Recycle More</field>
         <field name="description">Encourage recycling across offices</field>
+        <field name="category_id" ref="eco_category_energy"/>
     </record>
 </odoo>

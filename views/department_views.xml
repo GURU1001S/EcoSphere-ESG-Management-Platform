@@ -2,32 +2,34 @@
 <odoo>
     <record id="action_eco_department" model="ir.actions.act_window">
         <field name="name">Departments</field>
-        <field name="res_model">eco.department</field>
+        <field name="res_model">esg.department</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <record id="view_eco_department_tree" model="ir.ui.view">
-        <field name="name">eco.department.tree</field>
-        <field name="model">eco.department</field>
+        <field name="name">esg.department.tree</field>
+        <field name="model">esg.department</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
-                <field name="score"/>
+                <field name="status"/>
             </tree>
         </field>
     </record>
 
     <record id="view_eco_department_form" model="ir.ui.view">
-        <field name="name">eco.department.form</field>
-        <field name="model">eco.department</field>
+        <field name="name">esg.department.form</field>
+        <field name="model">esg.department</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="manager_id"/>
-                        <field name="category_ids"/>
-                        <field name="score"/>
+                        <field name="code"/>
+                        <field name="head_id"/>
+                        <field name="parent_id"/>
+                        <field name="employee_count"/>
+                        <field name="status"/>
                     </group>
                 </sheet>
             </form>
@@ -36,7 +38,7 @@
 
     <record id="action_eco_department_menu" model="ir.actions.act_window">
         <field name="name">Departments</field>
-        <field name="res_model">eco.department</field>
+        <field name="res_model">esg.department</field>
         <field name="view_mode">tree,form</field>
     </record>
 

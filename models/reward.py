@@ -2,19 +2,8 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 
-class EcoRewardRedemption(models.Model):
-    _name = 'eco.reward.redemption'
-    _description = 'Reward Redemption History'
-    _order = 'redeemed_date desc, id desc'
-
-    employee_id = fields.Many2one('hr.employee', string='Employee', required=True)
-    reward_id = fields.Many2one('eco.reward', string='Reward', required=True)
-    redeemed_date = fields.Datetime(string='Redeemed On', default=fields.Datetime.now, required=True)
-    points_spent = fields.Integer(string='Points Spent', required=True)
-
-
 class EcoReward(models.Model):
-    _name = 'eco.reward'
+    _name = 'esg.reward'
     _description = 'EcoSphere Reward'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -50,7 +39,7 @@ class EcoReward(models.Model):
         tracking=True
     )
     
-    redemption_ids = fields.One2many('eco.reward.redemption', 'reward_id', string='Redemptions')
+    redemption_ids = fields.One2many('esg.reward.redemption', 'reward_id', string='Redemptions')
 
     @api.depends('redemption_ids')
     def _compute_popularity_score(self):
@@ -62,10 +51,10 @@ class EcoReward(models.Model):
             redemption_count = len(reward.redemption_ids)
             reward.popularity_score = redemption_count / total_employees
 
-    def action_redeem(self, employee_id):
+    def action_redeem(self, employee_id=None):
         self.ensure_one()
-        
-        employee = self.env['hr.employee'].browse(employee_id)
+
+        employee = self.env['hr.employee'].browse(employee_id) if employee_id else self.env.user.employee_id
         if not employee.exists():
             raise UserError("Employee not found.")
             
@@ -95,7 +84,7 @@ class EcoReward(models.Model):
             self.status = 'out_of_stock'
             
         # Create redemption record
-        self.env['eco.reward.redemption'].create({
+        self.env['esg.reward.redemption'].create({
             'employee_id': employee.id,
             'reward_id': self.id,
             'points_spent': points_cost,

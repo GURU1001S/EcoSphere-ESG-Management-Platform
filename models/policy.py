@@ -1,15 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
-
-class HrEmployeeEsgInherit(models.Model):
-    """Bridge field: links native hr.employee to the custom esg.department model,
-    since esg.department is kept separate from hr.department by team decision."""
-    _inherit = 'hr.employee'
-
-    esg_department_id = fields.Many2one('esg.department', string='ESG Department')
-
-
 class EsgPolicy(models.Model):
     _name = 'esg.policy'
     _description = 'ESG Governance Policy'
