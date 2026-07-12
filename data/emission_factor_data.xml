@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="eco_ef_transport" model="eco.emission.factor">
+        <field name="name">Transport</field>
+        <field name="source">GHG Protocol</field>
+        <field name="factor">0.21</field>
+        <field name="unit">kg CO2e/km</field>
+    </record>
+    <record id="eco_ef_energy" model="eco.emission.factor">
+        <field name="name">Energy</field>
+        <field name="source">EPA</field>
+        <field name="factor">0.45</field>
+        <field name="unit">kg CO2e/kWh</field>
+    </record>
+</odoo>

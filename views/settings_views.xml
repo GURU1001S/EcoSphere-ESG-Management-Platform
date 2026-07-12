@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_eco_res_config_settings" model="ir.ui.view">
+        <field name="name">eco.res.config.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="arch" type="xml">
+            <form string="EcoSphere Settings">
+                <sheet>
+                    <group>
+                        <field name="env_goal_default_year"/>
+                        <field name="score_threshold"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

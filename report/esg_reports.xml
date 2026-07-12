@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="esg_dashboard_report">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <h2>EcoSphere ESG Dashboard</h2>
+                <p>Report generated for department: <t t-esc="doc.name"/></p>
+                <p>Current score: <t t-esc="doc.score"/></p>
+            </div>
+        </t>
+    </template>
+</odoo>

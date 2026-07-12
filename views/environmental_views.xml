@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_eco_emission_factor" model="ir.actions.act_window">
+        <field name="name">Emission Factors</field>
+        <field name="res_model">eco.emission.factor</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_eco_environmental_goal" model="ir.actions.act_window">
+        <field name="name">Environmental Goals</field>
+        <field name="res_model">eco.environmental.goal</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_eco_carbon_transaction" model="ir.actions.act_window">
+        <field name="name">Carbon Transactions</field>
+        <field name="res_model">eco.carbon.transaction</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_eco_environmental_items" name="Environmental Records" parent="menu_eco_environmental" sequence="1"/>
+    <menuitem id="menu_eco_emission_factors" name="Emission Factors" parent="menu_eco_environmental_items" action="action_eco_emission_factor" sequence="1"/>
+    <menuitem id="menu_eco_goals" name="Goals" parent="menu_eco_environmental_items" action="action_eco_environmental_goal" sequence="2"/>
+    <menuitem id="menu_eco_carbon" name="Carbon Transactions" parent="menu_eco_environmental_items" action="action_eco_carbon_transaction" sequence="3"/>
+</odoo>

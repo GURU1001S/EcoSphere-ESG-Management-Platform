@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="menu_eco_root" name="EcoSphere" sequence="10"/>
+    <menuitem id="menu_eco_environmental" name="Environmental" parent="menu_eco_root" sequence="1"/>
+    <menuitem id="menu_eco_social" name="Social" parent="menu_eco_root" sequence="2"/>
+    <menuitem id="menu_eco_governance" name="Governance" parent="menu_eco_root" sequence="3"/>
+    <menuitem id="menu_eco_gamification" name="Gamification" parent="menu_eco_root" sequence="4"/>
+    <menuitem id="menu_eco_settings" name="Settings" parent="menu_eco_root" sequence="5"/>
+</odoo>
