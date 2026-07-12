@@ -25,6 +25,7 @@
         'views/menu_views.xml',
         'views/department_views.xml',
         'views/environmental_views.xml',
+        'views/custom_report_wizard_views.xml',
         'views/social_views.xml',
         'views/governance_views.xml',
         'views/gamification_views.xml',

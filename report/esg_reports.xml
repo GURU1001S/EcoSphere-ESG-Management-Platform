@@ -1,12 +1,59 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="esg_dashboard_report">
-        <t t-call="web.basic_layout">
-            <div class="page">
-                <h2>EcoSphere ESG Dashboard</h2>
-                <p>Report generated for department: <t t-esc="doc.name"/></p>
-                <p>Current score: <t t-esc="doc.score"/></p>
-            </div>
+    <!-- PDF Engine Registration -->
+    <record id="action_report_esg_custom" model="ir.actions.report">
+        <field name="name">ESG Summary Report</field>
+        <field name="model">eco.custom.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ecosphere.report_esg_custom_template</field>
+        <field name="report_file">ecosphere.report_esg_custom_template</field>
+        <field name="binding_model_id" ref="model_eco_custom_report_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- PDF Visual Template (HTML) -->
+    <template id="report_esg_custom_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>ESG Executive Summary</h2>
+                        <hr/>
+                        <div class="row mt32 mb32">
+                            <div class="col-3">
+                                <strong>Target Module:</strong>
+                                <p t-field="o.module_type"/>
+                            </div>
+                            <div class="col-3" t-if="o.department_id">
+                                <strong>Department:</strong>
+                                <p t-field="o.department_id.name"/>
+                            </div>
+                            <div class="col-3" t-if="o.date_from">
+                                <strong>Date Range:</strong>
+                                <p><span t-field="o.date_from"/> to <span t-field="o.date_to"/></p>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Status / Value</th>
+                                    <th>Target</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data rows will be piped in here based on the final database queries -->
+                                <tr>
+                                    <td>Sample Metric (Waiting on backend data)</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
         </t>
     </template>
 </odoo>
