@@ -1,9 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_eco_department,eco.department,model_eco_department,,1,1,1,1
-access_eco_category,eco.category,model_eco_category,,1,1,1,1
-access_eco_emission_factor,eco.emission.factor,model_eco_emission_factor,,1,1,1,1
-access_eco_environmental_goal,eco.environmental.goal,model_eco_environmental_goal,,1,1,1,1
-access_eco_carbon_transaction,eco.carbon.transaction,model_eco_carbon_transaction,,1,1,1,1
+access_esg_department,esg.department,model_esg_department,,1,1,1,1
+access_esg_category,esg.category,model_esg_category,,1,1,1,1
+access_esg_emission_factor,esg.emission.factor,model_esg_emission_factor,,1,1,1,1
+access_esg_environmental_goal,esg.environmental.goal,model_esg_environmental_goal,,1,1,1,1
+access_carbon_transaction,carbon.transaction,model_carbon_transaction,,1,1,1,1
 access_eco_csr_activity,eco.csr.activity,model_eco_csr_activity,,1,1,1,1
 access_eco_employee_participation,eco.employee.participation,model_eco_employee_participation,,1,1,1,1
 access_eco_challenge,eco.challenge,model_eco_challenge,,1,1,1,1
