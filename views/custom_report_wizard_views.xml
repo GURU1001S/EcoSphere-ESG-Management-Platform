@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_eco_custom_report_wizard" model="ir.ui.view">
+        <field name="name">eco.custom.report.wizard.form</field>
+        <field name="model">eco.custom.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Custom Report Builder">
+                <field name="state" invisible="1"/>
+                
+                <!-- Input State: Visible only when drafting the report -->
+                <group invisible="state == 'done'">
+                    <group string="Primary Parameters">
+                        <field name="module_type" widget="radio"/>
+                        <field name="export_format" widget="radio"/>
+                    </group>
+                    <group string="Global Filters">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="department_id"/>
+                    </group>
+                    
+                    <!-- Dynamic Filters: Evaluates the module_type in real-time -->
+                    <group string="Module-Specific Filters" invisible="module_type in ['environmental', 'governance']">
+                        <field name="employee_id" invisible="module_type not in ['social', 'gamification', 'all']"/>
+                        <field name="challenge_id" invisible="module_type not in ['gamification', 'all']"/>
+                        <field name="category_id" invisible="module_type not in ['social', 'gamification', 'all']"/>
+                    </group>
+                </group>
+                
+                <!-- Output State: Visible only after Excel is generated -->
+                <div invisible="state == 'draft'" class="alert alert-success text-center" role="alert">
+                    <h3>Report Generation Complete</h3>
+                    <p>Click the link below to download your compiled data.</p>
+                    <field name="excel_filename" invisible="1"/>
+                    <field name="excel_file" readonly="1" filename="excel_filename" widget="binary"/>
+                </div>
+
+                <footer>
+                    <button name="action_generate_report" string="Generate Report" type="object" class="btn-primary" invisible="state == 'done'"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- UI Action and Menu Link -->
+    <record id="action_eco_custom_report" model="ir.actions.act_window">
+        <field name="name">Custom Report Builder</field>
+        <field name="res_model">eco.custom.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_eco_custom_report" 
+              name="Custom Report Builder" 
+              parent="menu_eco_reports" 
+              action="action_eco_custom_report" 
+              sequence="10"/>
+</odoo>
