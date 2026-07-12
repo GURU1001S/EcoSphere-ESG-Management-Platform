@@ -120,13 +120,13 @@ class EcoEmployeeParticipation(models.Model):
             f"Return ONLY a single integer number between 1 and 10. Do not include any other text or explanation."
         )
         
-        url = "https://api.x.ai/v1/chat/completions"
+        url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "grok-beta",
+            "model": "llama-3.1-8b-instant",
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.1 # Low temp for strictly formatting output
         }
