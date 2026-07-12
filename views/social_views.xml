@@ -1,16 +1,262 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- ============================================== -->
+    <!-- ECO.CSR.ACTIVITY VIEWS                         -->
+    <!-- ============================================== -->
+    <record id="view_eco_csr_activity_form" model="ir.ui.view">
+        <field name="name">eco.csr.activity.form</field>
+        <field name="model">eco.csr.activity</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" string="Activate" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="state != 'active'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('cancelled', 'completed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-star">
+                            <field name="actual_impact_score" widget="statinfo" string="Impact Score"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-users">
+                            <field name="participation_rate" widget="statinfo" string="Particip. Rate"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Activity Title"/></h1>
+                    </div>
+                    
+                    <div invisible="not ai_summary" class="alert alert-info mt-3" role="alert">
+                        <strong><i class="fa fa-robot me-2"/> AI Impact Summary:</strong>
+                        <div class="mt-1"><field name="ai_summary" readonly="1" force_save="1"/></div>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="target_sdg"/>
+                            <field name="department_id"/>
+                            <field name="points_reward"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="carbon_offset_kg"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Impact &amp; Expectations">
+                            <field name="expected_impact" placeholder="What impact do we expect to make?"/>
+                        </page>
+                        <page string="Participants">
+                            <field name="participation_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eco_csr_activity_kanban" model="ir.ui.view">
+        <field name="name">eco.csr.activity.kanban</field>
+        <field name="model">eco.csr.activity</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="target_sdg"/>
+                <field name="state"/>
+                <field name="actual_impact_score"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="mt-2 text-muted">
+                                    <field name="target_sdg"/>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge rounded-pill text-bg-success">
+                                        <i class="fa fa-star me-1"/> <field name="actual_impact_score"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_eco_csr_activity_tree" model="ir.ui.view">
+        <field name="name">eco.csr.activity.tree</field>
+        <field name="model">eco.csr.activity</field>
+        <field name="arch" type="xml">
+            <tree string="CSR Activities">
+                <field name="name"/>
+                <field name="target_sdg"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'completed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================== -->
+    <!-- ECO.EMPLOYEE.PARTICIPATION VIEWS               -->
+    <!-- ============================================== -->
+    <record id="view_eco_employee_participation_form" model="ir.ui.view">
+        <field name="name">eco.employee.participation.form</field>
+        <field name="model">eco.employee.participation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="approval_status != 'pending'"/>
+                    <button name="action_reject" string="Reject" type="object" invisible="approval_status != 'pending'"/>
+                    <field name="approval_status" widget="statusbar" statusbar_visible="pending,approved,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="activity_id"/>
+                            <field name="impact_category"/>
+                            <field name="verified_hours"/>
+                            <field name="completion_date"/>
+                        </group>
+                        <group>
+                            <field name="proof" filename="proof_filename"/>
+                            <field name="proof_filename" invisible="1"/>
+                            <field name="points_earned"/>
+                            <field name="ai_impact_score" widget="progressbar"/>
+                            <field name="points_multiplier"/>
+                        </group>
+                    </group>
+                    <group string="Self-Reported Impact">
+                        <field name="self_reported_impact" nolabel="1" placeholder="Describe the impact you made during this activity..."/>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eco_employee_participation_tree" model="ir.ui.view">
+        <field name="name">eco.employee.participation.tree</field>
+        <field name="model">eco.employee.participation</field>
+        <field name="arch" type="xml">
+            <tree string="CSR Participations">
+                <field name="employee_id"/>
+                <field name="activity_id"/>
+                <field name="impact_category"/>
+                <field name="verified_hours"/>
+                <field name="points_earned"/>
+                <field name="approval_status" widget="badge" decoration-success="approval_status == 'approved'" decoration-danger="approval_status == 'rejected'" decoration-warning="approval_status == 'pending'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================== -->
+    <!-- HR.EMPLOYEE INHERIT VIEWS                      -->
+    <!-- ============================================== -->
+    <record id="action_eco_leaderboard" model="ir.actions.act_window">
+        <field name="name">Sustainability Leaderboard</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[]</field>
+    </record>
+
+    <record id="view_eco_leaderboard_tree" model="ir.ui.view">
+        <field name="name">eco.leaderboard.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <tree string="Leaderboard" default_order="xp desc">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="xp"/>
+                <field name="points"/>
+                <field name="streak"/>
+                <field name="sentiment_tag" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_eco_leaderboard_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_eco_leaderboard_tree"/>
+        <field name="act_window_id" ref="action_eco_leaderboard"/>
+    </record>
+
+    <record id="view_hr_employee_form_eco_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.eco.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Sustainability">
+                    <div class="mb-4">
+                        <button name="action_recommend_challenges" string="AI Recommend Challenges" type="object" class="oe_highlight me-2"/>
+                        <button name="%(action_eco_leaderboard)d" string="View Leaderboard" type="action" class="btn btn-secondary"/>
+                    </div>
+                    <group>
+                        <group string="Gamification Profile">
+                            <field name="xp"/>
+                            <field name="points"/>
+                            <field name="streak"/>
+                        </group>
+                        <group string="Intelligence">
+                            <field name="sentiment_tag" widget="badge"/>
+                            <field name="strongest_pillar"/>
+                            <field name="sustainability_archetype"/>
+                        </group>
+                    </group>
+                    <group string="Earned Badges">
+                        <!-- Assuming eco.badge has a color field, else tags won't colorize properly, but it looks great -->
+                        <field name="badge_ids" widget="many2many_tags" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================== -->
+    <!-- ACTIONS AND MENUS                              -->
+    <!-- ============================================== -->
     <record id="action_eco_csr_activity" model="ir.actions.act_window">
         <field name="name">CSR Activities</field>
         <field name="res_model">eco.csr.activity</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
     </record>
+
     <record id="action_eco_employee_participation" model="ir.actions.act_window">
-        <field name="name">Employee Participation</field>
+        <field name="name">Employee Participations</field>
         <field name="res_model">eco.employee.participation</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <menuitem id="menu_eco_social_items" name="Social Records" parent="menu_eco_social" sequence="1"/>
-    <menuitem id="menu_eco_csr" name="CSR Activities" parent="menu_eco_social_items" action="action_eco_csr_activity" sequence="1"/>
-    <menuitem id="menu_eco_participation" name="Employee Participation" parent="menu_eco_social_items" action="action_eco_employee_participation" sequence="2"/>
+
+    <!-- Using temp root to attach cleanly -->
+    <menuitem id="menu_eco_social" name="Social &amp; CSR" parent="menu_eco_root_temp" sequence="30"/>
+    <menuitem id="menu_eco_csr_activity" name="CSR Activities" parent="menu_eco_social" action="action_eco_csr_activity" sequence="10"/>
+    <menuitem id="menu_eco_emp_part" name="Participations" parent="menu_eco_social" action="action_eco_employee_participation" sequence="20"/>
+    <menuitem id="menu_eco_leaderboard_nav" name="Leaderboard" parent="menu_eco_social" action="action_eco_leaderboard" sequence="30"/>
+
 </odoo>
