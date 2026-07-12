@@ -2,9 +2,9 @@
     <data>
 
         <!-- ============ ESG POLICY ============ -->
-        <record id="view_eco_policy_tree" model="ir.ui.view">
-            <field name="name">eco.policy.tree</field>
-            <field name="model">eco.policy</field>
+        <record id="view_esg_policy_tree" model="ir.ui.view">
+            <field name="name">esg.policy.tree</field>
+            <field name="model">esg.policy</field>
             <field name="arch" type="xml">
                 <tree decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
                     <field name="code"/>
@@ -20,9 +20,9 @@
             </field>
         </record>
 
-        <record id="view_eco_policy_form" model="ir.ui.view">
-            <field name="name">eco.policy.form</field>
-            <field name="model">eco.policy</field>
+        <record id="view_esg_policy_form" model="ir.ui.view">
+            <field name="name">esg.policy.form</field>
+            <field name="model">esg.policy</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -82,17 +82,17 @@
             </field>
         </record>
 
-        <record id="action_eco_policy" model="ir.actions.act_window">
+        <record id="action_esg_policy" model="ir.actions.act_window">
             <field name="name">Policies</field>
-            <field name="res_model">eco.policy</field>
+            <field name="res_model">esg.policy</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create your first ESG policy</p></field>
         </record>
 
         <!-- ============ POLICY ACKNOWLEDGEMENT ============ -->
-        <record id="view_eco_policy_acknowledgement_tree" model="ir.ui.view">
-            <field name="name">eco.policy.acknowledgement.tree</field>
-            <field name="model">eco.policy.acknowledgement</field>
+        <record id="view_esg_policy_acknowledgement_tree" model="ir.ui.view">
+            <field name="name">esg.policy.acknowledgement.tree</field>
+            <field name="model">esg.policy.acknowledgement</field>
             <field name="arch" type="xml">
                 <tree decoration-danger="state == 'overdue'" decoration-success="state == 'acknowledged'">
                     <field name="policy_id"/>
@@ -109,9 +109,9 @@
             </field>
         </record>
 
-        <record id="view_eco_policy_acknowledgement_search" model="ir.ui.view">
-            <field name="name">eco.policy.acknowledgement.search</field>
-            <field name="model">eco.policy.acknowledgement</field>
+        <record id="view_esg_policy_acknowledgement_search" model="ir.ui.view">
+            <field name="name">esg.policy.acknowledgement.search</field>
+            <field name="model">esg.policy.acknowledgement</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="policy_id"/>
@@ -129,16 +129,16 @@
             </field>
         </record>
 
-        <record id="action_eco_policy_acknowledgement" model="ir.actions.act_window">
+        <record id="action_esg_policy_acknowledgement" model="ir.actions.act_window">
             <field name="name">Policy Acknowledgements</field>
-            <field name="res_model">eco.policy.acknowledgement</field>
+            <field name="res_model">esg.policy.acknowledgement</field>
             <field name="view_mode">tree</field>
         </record>
 
         <!-- ============ AUDIT ============ -->
-        <record id="view_eco_audit_tree" model="ir.ui.view">
-            <field name="name">eco.audit.tree</field>
-            <field name="model">eco.audit</field>
+        <record id="view_esg_audit_tree" model="ir.ui.view">
+            <field name="name">esg.audit.tree</field>
+            <field name="model">esg.audit</field>
             <field name="arch" type="xml">
                 <tree decoration-danger="open_issue_count > 0">
                     <field name="name"/>
@@ -154,9 +154,9 @@
             </field>
         </record>
 
-        <record id="view_eco_audit_form" model="ir.ui.view">
-            <field name="name">eco.audit.form</field>
-            <field name="model">eco.audit</field>
+        <record id="view_esg_audit_form" model="ir.ui.view">
+            <field name="name">esg.audit.form</field>
+            <field name="model">esg.audit</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -216,17 +216,17 @@
             </field>
         </record>
 
-        <record id="action_eco_audit" model="ir.actions.act_window">
+        <record id="action_esg_audit" model="ir.actions.act_window">
             <field name="name">Audits</field>
-            <field name="res_model">eco.audit</field>
+            <field name="res_model">esg.audit</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Schedule your first audit</p></field>
         </record>
 
         <!-- ============ COMPLIANCE ISSUE ============ -->
-        <record id="view_eco_compliance_issue_tree" model="ir.ui.view">
-            <field name="name">eco.compliance.issue.tree</field>
-            <field name="model">eco.compliance.issue</field>
+        <record id="view_esg_compliance_issue_tree" model="ir.ui.view">
+            <field name="name">esg.compliance.issue.tree</field>
+            <field name="model">esg.compliance.issue</field>
             <field name="arch" type="xml">
                 <tree decoration-danger="is_overdue" decoration-warning="severity in ('high','critical') and not is_overdue">
                     <field name="name"/>
@@ -244,9 +244,9 @@
             </field>
         </record>
 
-        <record id="view_eco_compliance_issue_form" model="ir.ui.view">
-            <field name="name">eco.compliance.issue.form</field>
-            <field name="model">eco.compliance.issue</field>
+        <record id="view_esg_compliance_issue_form" model="ir.ui.view">
+            <field name="name">esg.compliance.issue.form</field>
+            <field name="model">esg.compliance.issue</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -289,9 +289,9 @@
             </field>
         </record>
 
-        <record id="view_eco_compliance_issue_search" model="ir.ui.view">
-            <field name="name">eco.compliance.issue.search</field>
-            <field name="model">eco.compliance.issue</field>
+        <record id="view_esg_compliance_issue_search" model="ir.ui.view">
+            <field name="name">esg.compliance.issue.search</field>
+            <field name="model">esg.compliance.issue</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
@@ -309,16 +309,16 @@
             </field>
         </record>
 
-        <record id="action_eco_compliance_issue" model="ir.actions.act_window">
+        <record id="action_esg_compliance_issue" model="ir.actions.act_window">
             <field name="name">Compliance Issues</field>
-            <field name="res_model">eco.compliance.issue</field>
+            <field name="res_model">esg.compliance.issue</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- ============ DEPARTMENT SCORE (read-only, engine output) ============ -->
-        <record id="view_eco_department_score_tree" model="ir.ui.view">
-            <field name="name">eco.department.score.tree</field>
-            <field name="model">eco.department.score</field>
+        <!-- ============ DEPARTMENT SCORE ============ -->
+        <record id="view_esg_department_score_tree" model="ir.ui.view">
+            <field name="name">esg.department.score.tree</field>
+            <field name="model">esg.department.score</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false">
                     <field name="department_id"/>
@@ -331,23 +331,23 @@
             </field>
         </record>
 
-        <record id="action_eco_department_score" model="ir.actions.act_window">
+        <record id="action_esg_department_score" model="ir.actions.act_window">
             <field name="name">Department Scores</field>
-            <field name="res_model">eco.department.score</field>
+            <field name="res_model">esg.department.score</field>
             <field name="view_mode">tree</field>
         </record>
 
-        <!-- ============ MENU ITEMS (children of menu_eco_governance from menu_views.xml) ============ -->
-        <menuitem id="menu_eco_policy" name="Policies" parent="menu_eco_governance"
-                  action="action_eco_policy" sequence="10"/>
-        <menuitem id="menu_eco_policy_acknowledgement" name="Policy Acknowledgements" parent="menu_eco_governance"
-                  action="action_eco_policy_acknowledgement" sequence="20"/>
-        <menuitem id="menu_eco_audit" name="Audits" parent="menu_eco_governance"
-                  action="action_eco_audit" sequence="30"/>
-        <menuitem id="menu_eco_compliance_issue" name="Compliance Issues" parent="menu_eco_governance"
-                  action="action_eco_compliance_issue" sequence="40"/>
-        <menuitem id="menu_eco_department_score" name="Department Scores" parent="menu_eco_governance"
-                  action="action_eco_department_score" sequence="50"/>
+        <!-- ============ MENU ITEMS ============ -->
+        <menuitem id="menu_esg_policy" name="Policies" parent="menu_eco_governance"
+                  action="action_esg_policy" sequence="10"/>
+        <menuitem id="menu_esg_policy_acknowledgement" name="Policy Acknowledgements" parent="menu_eco_governance"
+                  action="action_esg_policy_acknowledgement" sequence="20"/>
+        <menuitem id="menu_esg_audit" name="Audits" parent="menu_eco_governance"
+                  action="action_esg_audit" sequence="30"/>
+        <menuitem id="menu_esg_compliance_issue" name="Compliance Issues" parent="menu_eco_governance"
+                  action="action_esg_compliance_issue" sequence="40"/>
+        <menuitem id="menu_esg_department_score" name="Department Scores" parent="menu_eco_governance"
+                  action="action_esg_department_score" sequence="50"/>
 
     </data>
 </odoo>

@@ -2,8 +2,16 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 
+class HrEmployeeEsgInherit(models.Model):
+    """Bridge field: links native hr.employee to the custom esg.department model,
+    since esg.department is kept separate from hr.department by team decision."""
+    _inherit = 'hr.employee'
+
+    esg_department_id = fields.Many2one('esg.department', string='ESG Department')
+
+
 class EsgPolicy(models.Model):
-    _name = 'eco.policy'
+    _name = 'esg.policy'
     _description = 'ESG Governance Policy'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
@@ -20,7 +28,7 @@ class EsgPolicy(models.Model):
     document = fields.Binary(string='Policy Document', attachment=True)
     document_filename = fields.Char()
     department_ids = fields.Many2many(
-        'eco.department', string='Applicable Departments',
+        'esg.department', string='Applicable Departments',
         help="Leave empty to apply to all departments"
     )
     version = fields.Char(default='1.0', tracking=True)
@@ -33,7 +41,7 @@ class EsgPolicy(models.Model):
     active = fields.Boolean(default=True)
 
     acknowledgement_ids = fields.One2many(
-        'eco.policy.acknowledgement', 'policy_id', string='Acknowledgements'
+        'esg.policy.acknowledgement', 'policy_id', string='Acknowledgements'
     )
     acknowledgement_count = fields.Integer(compute='_compute_acknowledgement_stats')
     acknowledgement_rate = fields.Float(
@@ -72,18 +80,18 @@ class EsgPolicy(models.Model):
         self.write({'state': 'archived'})
 
     def _generate_acknowledgement_requests(self):
-        """Create pending acknowledgement records for all relevant employees."""
+        """Create pending acknowledgement records for all relevant employees,
+        looked up via the esg_department_id bridge field on hr.employee."""
         Employee = self.env['hr.employee']
         for rec in self:
             domain = []
             if rec.department_ids:
-                # department_ids here refers to eco.department; map to hr.employee via department_id if linked
-                domain = [('department_id', 'in', rec.department_ids.ids)]
+                domain = [('esg_department_id', 'in', rec.department_ids.ids)]
             employees = Employee.search(domain)
             existing_emp_ids = rec.acknowledgement_ids.mapped('employee_id').ids
             to_create = employees.filtered(lambda e: e.id not in existing_emp_ids)
             for emp in to_create:
-                self.env['eco.policy.acknowledgement'].create({
+                self.env['esg.policy.acknowledgement'].create({
                     'policy_id': rec.id,
                     'employee_id': emp.id,
                     'state': 'pending',

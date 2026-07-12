@@ -3,13 +3,13 @@ from odoo.exceptions import ValidationError
 
 
 class ComplianceIssue(models.Model):
-    _name = 'eco.compliance.issue'
+    _name = 'esg.compliance.issue'
     _description = 'Governance Compliance Issue'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'severity desc, due_date asc'
 
     name = fields.Char(default='New', copy=False, tracking=True)
-    audit_id = fields.Many2one('eco.audit', string='Related Audit', tracking=True)
+    audit_id = fields.Many2one('esg.audit', string='Related Audit', tracking=True)
     department_id = fields.Many2one(
         related='audit_id.department_id', store=True, string='Department', readonly=True
     )
@@ -38,7 +38,7 @@ class ComplianceIssue(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
-                vals['name'] = self.env['ir.sequence'].next_by_code('eco.compliance.issue') or 'New'
+                vals['name'] = self.env['ir.sequence'].next_by_code('esg.compliance.issue') or 'New'
         records = super().create(vals_list)
         records._notify_new_issue()
         return records
@@ -52,7 +52,6 @@ class ComplianceIssue(models.Model):
             )
 
     def _notify_new_issue(self):
-        """Notification System requirement: alert on new compliance issue raised."""
         for rec in self:
             if rec.owner_id.user_id:
                 rec.activity_schedule(
@@ -74,7 +73,6 @@ class ComplianceIssue(models.Model):
 
     @api.model
     def _cron_flag_overdue_issues(self):
-        """Called by ir.cron to re-notify owners of overdue open/in-progress issues."""
         today = fields.Date.today()
         overdue = self.search([
             ('due_date', '<', today),

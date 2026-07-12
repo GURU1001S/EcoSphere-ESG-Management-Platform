@@ -2,15 +2,15 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 
-class EcoAudit(models.Model):
-    _name = 'eco.audit'
+class EsgAudit(models.Model):
+    _name = 'esg.audit'
     _description = 'Governance Audit'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'date desc'
 
     name = fields.Char(default='New', copy=False, tracking=True)
     title = fields.Char(required=True, tracking=True)
-    department_id = fields.Many2one('eco.department', required=True, tracking=True)
+    department_id = fields.Many2one('esg.department', required=True, tracking=True)
     auditor_id = fields.Many2one('hr.employee', required=True, string='Auditor', tracking=True)
     date = fields.Date(default=fields.Date.today, required=True, tracking=True)
     audit_type = fields.Selection([
@@ -27,7 +27,7 @@ class EcoAudit(models.Model):
         ('completed', 'Completed'),
     ], default='planned', required=True, tracking=True)
 
-    compliance_issue_ids = fields.One2many('eco.compliance.issue', 'audit_id', string='Compliance Issues')
+    compliance_issue_ids = fields.One2many('esg.compliance.issue', 'audit_id', string='Compliance Issues')
     issue_count = fields.Integer(compute='_compute_issue_stats')
     open_issue_count = fields.Integer(compute='_compute_issue_stats')
 
@@ -39,7 +39,7 @@ class EcoAudit(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
-                vals['name'] = self.env['ir.sequence'].next_by_code('eco.audit') or 'New'
+                vals['name'] = self.env['ir.sequence'].next_by_code('esg.audit') or 'New'
         return super().create(vals_list)
 
     @api.depends('compliance_issue_ids.status')

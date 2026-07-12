@@ -1,16 +1,23 @@
 from odoo import models, fields, api
 
+# Maps esg.environmental.goal's status field to a numeric score,
+# since there is no current-vs-target progress field to compute a percentage from.
+GOAL_STATUS_SCORE = {
+    'achieved': 100.0,
+    'on_track': 60.0,
+    'at_risk': 20.0,
+}
+
 
 class DepartmentScore(models.Model):
-    _name = 'eco.department.score'
+    _name = 'esg.department.score'
     _description = 'Aggregated ESG Score per Department'
     _inherit = ['mail.thread']
     _order = 'period_date desc'
     _rec_name = 'department_id'
 
-    department_id = fields.Many2one('eco.department', required=True, ondelete='cascade', tracking=True)
-    period_date = fields.Date(required=True, default=fields.Date.today, tracking=True,
-                               help="The date this score snapshot represents (e.g. month-end)")
+    department_id = fields.Many2one('esg.department', required=True, ondelete='cascade', tracking=True)
+    period_date = fields.Date(required=True, default=fields.Date.today, tracking=True)
 
     environmental_score = fields.Float(default=0.0, tracking=True)
     social_score = fields.Float(default=0.0, tracking=True)
@@ -35,29 +42,21 @@ class DepartmentScore(models.Model):
                 rec.governance_score * gov_weight
             )
 
-    # ---------------------------------------------------------
-    # Scoring Engine — recompute methods
-    # ---------------------------------------------------------
-
     @api.model
     def _compute_environmental_score(self, department):
-        """Based on Environmental Goal progress (goal fields owned by Person A)."""
-        Goal = self.env['eco.environmental.goal']
+        """Averages goal status mapped to a score (achieved=100, on_track=60, at_risk=20)."""
+        Goal = self.env['esg.environmental.goal']
         goals = Goal.search([('department_id', '=', department.id)])
         if not goals:
             return 0.0
-        progresses = []
-        for goal in goals:
-            if goal.target_co2:
-                pct = max(0.0, min(100.0, 100.0 * (1 - (goal.current_co2 / goal.target_co2))))
-                progresses.append(pct)
-        return sum(progresses) / len(progresses) if progresses else 0.0
+        scores = [GOAL_STATUS_SCORE.get(g.status, 0.0) for g in goals]
+        return sum(scores) / len(scores) if scores else 0.0
 
     @api.model
     def _compute_social_score(self, department):
-        """Based on CSR participation approval rate (models owned by Person B)."""
-        Participation = self.env['eco.employee.participation']
-        employees = self.env['hr.employee'].search([('department_id', '=', department.id)])
+        """CSR participation approval rate, employees looked up via esg_department_id bridge field."""
+        Participation = self.env['esg.employee.participation']
+        employees = self.env['hr.employee'].search([('esg_department_id', '=', department.id)])
         if not employees:
             return 0.0
         total = Participation.search_count([('employee_id', 'in', employees.ids)])
@@ -69,9 +68,8 @@ class DepartmentScore(models.Model):
 
     @api.model
     def _compute_governance_score(self, department):
-        """Policy acknowledgement rate minus severity-weighted open compliance issues."""
-        Ack = self.env['eco.policy.acknowledgement']
-        Issue = self.env['eco.compliance.issue']
+        Ack = self.env['esg.policy.acknowledgement']
+        Issue = self.env['esg.compliance.issue']
 
         acks = Ack.search([('department_id', '=', department.id)])
         total_acks = len(acks)
@@ -89,7 +87,6 @@ class DepartmentScore(models.Model):
 
     @api.model
     def recompute_department_score(self, department, period_date=None):
-        """Entry point called by ir.cron and can be called manually (e.g. button/API)."""
         period_date = period_date or fields.Date.today()
         env_score = self._compute_environmental_score(department)
         soc_score = self._compute_social_score(department)
@@ -113,15 +110,13 @@ class DepartmentScore(models.Model):
 
     @api.model
     def _cron_recompute_all_scores(self):
-        """Scheduled job (registered in data/ir_cron_data.xml) - recomputes every department."""
-        departments = self.env['eco.department'].search([])
+        departments = self.env['esg.department'].search([])
         for dept in departments:
             self.recompute_department_score(dept)
 
     @api.model
     def get_overall_esg_score(self):
-        """Weighted average of all departments' latest total_score - for dashboard/reports."""
-        departments = self.env['eco.department'].search([])
+        departments = self.env['esg.department'].search([])
         scores = []
         for dept in departments:
             latest = self.search(

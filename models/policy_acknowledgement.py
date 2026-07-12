@@ -3,15 +3,17 @@ from odoo.exceptions import ValidationError
 
 
 class PolicyAcknowledgement(models.Model):
-    _name = 'eco.policy.acknowledgement'
+    _name = 'esg.policy.acknowledgement'
     _description = 'Employee Policy Acknowledgement'
     _inherit = ['mail.thread']
     _order = 'create_date desc'
     _rec_name = 'policy_id'
 
-    policy_id = fields.Many2one('eco.policy', required=True, ondelete='cascade', tracking=True)
+    policy_id = fields.Many2one('esg.policy', required=True, ondelete='cascade', tracking=True)
     employee_id = fields.Many2one('hr.employee', required=True, tracking=True)
-    department_id = fields.Many2one(related='employee_id.department_id', store=True, string='Department')
+    department_id = fields.Many2one(
+        related='employee_id.esg_department_id', store=True, string='Department'
+    )
     state = fields.Selection([
         ('pending', 'Pending'),
         ('acknowledged', 'Acknowledged'),
@@ -37,7 +39,6 @@ class PolicyAcknowledgement(models.Model):
             rec._notify_acknowledgement()
 
     def _notify_acknowledgement(self):
-        """Post a message on the policy's chatter confirming acknowledgement."""
         for rec in self:
             rec.policy_id.message_post(
                 body=f"{rec.employee_id.name} acknowledged this policy on {rec.acknowledged_date}.",
@@ -45,7 +46,6 @@ class PolicyAcknowledgement(models.Model):
             )
 
     def action_send_reminder(self):
-        """Manually trigger a reminder; also called by scheduled cron for pending/overdue records."""
         for rec in self.filtered(lambda r: r.state in ('pending', 'overdue')):
             if rec.employee_id.user_id:
                 rec.activity_schedule(
@@ -57,7 +57,6 @@ class PolicyAcknowledgement(models.Model):
 
     @api.model
     def _cron_flag_overdue(self):
-        """Called by ir.cron (owned in department_score.py / ir_cron_data.xml) to flag overdue acknowledgements."""
         today = fields.Date.today()
         overdue = self.search([
             ('state', '=', 'pending'),
