@@ -1,9 +1,17 @@
-from odoo import fields, models
+from odoo import models, fields
 
+class Category(models.Model):
+    _name = "esg.category"
+    _description = "ESG Category"
 
-class EcoCategory(models.Model):
-    _name = 'eco.category'
-    _description = 'EcoSphere Category'
-
-    name = fields.Char(required=True)
-    description = fields.Text()
+    name = fields.Char(string="Name", required=True)
+    
+    type = fields.Selection([
+        ('csr', 'CSR Activity'),
+        ('challenge', 'Challenge')
+    ], string="Type", required=True)
+    
+    status = fields.Selection([
+        ('active', 'Active'),
+        ('inactive', 'Inactive')
+    ], string="Status", default='active')
