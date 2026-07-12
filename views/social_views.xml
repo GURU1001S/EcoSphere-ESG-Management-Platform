@@ -253,8 +253,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Using temp root to attach cleanly -->
-    <menuitem id="menu_eco_social" name="Social &amp; CSR" parent="menu_eco_root_temp" sequence="30"/>
     <menuitem id="menu_eco_csr_activity" name="CSR Activities" parent="menu_eco_social" action="action_eco_csr_activity" sequence="10"/>
     <menuitem id="menu_eco_emp_part" name="Participations" parent="menu_eco_social" action="action_eco_employee_participation" sequence="20"/>
     <menuitem id="menu_eco_leaderboard_nav" name="Leaderboard" parent="menu_eco_social" action="action_eco_leaderboard" sequence="30"/>
