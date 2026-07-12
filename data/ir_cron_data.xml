@@ -1,12 +1,56 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="ir_cron_eco_department_score" model="ir.cron">
-        <field name="name">EcoSphere Department Score Recompute</field>
-        <field name="model_id" ref="base.model_ir_cron"/>
-        <field name="state">code</field>
-        <field name="code">model._cron_recompute_department_scores()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-    </record>
+    <data noupdate="1">
+
+        <!-- Recompute all department ESG scores daily -->
+        <record id="ir_cron_recompute_department_scores" model="ir.cron">
+            <field name="name">EcoSphere: Recompute Department ESG Scores</field>
+            <field name="model_id" ref="model_eco_department_score"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_recompute_all_scores()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Flag overdue policy acknowledgements and send reminders -->
+        <record id="ir_cron_flag_overdue_acknowledgements" model="ir.cron">
+            <field name="name">EcoSphere: Flag Overdue Policy Acknowledgements</field>
+            <field name="model_id" ref="model_eco_policy_acknowledgement"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_flag_overdue()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Re-notify owners of overdue compliance issues -->
+        <record id="ir_cron_flag_overdue_compliance_issues" model="ir.cron">
+            <field name="name">EcoSphere: Flag Overdue Compliance Issues</field>
+            <field name="model_id" ref="model_eco_compliance_issue"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_flag_overdue_issues()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Sequences needed by audit.py and compliance_issue.py (flagged as new dependency earlier) -->
+        <record id="seq_eco_audit" model="ir.sequence">
+            <field name="name">ESG Audit Sequence</field>
+            <field name="code">eco.audit</field>
+            <field name="prefix">AUD/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_eco_compliance_issue" model="ir.sequence">
+            <field name="name">ESG Compliance Issue Sequence</field>
+            <field name="code">eco.compliance.issue</field>
+            <field name="prefix">CI/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+    </data>
 </odoo>
