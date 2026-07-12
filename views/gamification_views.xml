@@ -312,10 +312,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Optional standalone menus in case a root menu hasn't been defined by other team members yet -->
-    <menuitem id="menu_eco_root_temp" name="EcoSphere"/>
-    <menuitem id="menu_eco_gamification" name="Gamification" parent="menu_eco_root_temp" sequence="20"/>
-    
     <menuitem id="menu_eco_challenge" name="Challenges" parent="menu_eco_gamification" action="action_eco_challenge" sequence="10"/>
     <menuitem id="menu_eco_challenge_part" name="Participations" parent="menu_eco_gamification" action="action_eco_challenge_participation" sequence="20"/>
     <menuitem id="menu_eco_badge" name="Badges" parent="menu_eco_gamification" action="action_eco_badge" sequence="30"/>
