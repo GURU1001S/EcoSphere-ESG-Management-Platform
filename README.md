@@ -257,27 +257,33 @@ EcoSphere generates four structured reports exportable as PDF, Excel, or CSV:
 
 ## Architecture
 
-```
-Odoo 17 ORM (PostgreSQL)
+```text
+Odoo 17
+        │
+        ├── PostgreSQL (via Odoo ORM)
         │
         ├── EcoSphere Models (Python)
-        │       ├── Business Logic Layer
-        │       │     ├── Scoring Engine (compute methods)
-        │       │     ├── Workflow Engine (state machines)
-        │       │     └── Behavioral Fingerprint (hr.employee extension)
-        │       └── AI Integration Layer
-        │             └── Groq / Llama 3.1 API (challenge gen, feedback, impact synthesis)
+        │       ├── Business Logic
+        │       │     ├── ESG Scoring Engine (compute methods)
+        │       │     ├── Workflow Engine (state transitions)
+        │       │     └── Business Rules
+        │       │
+        │       └── AI Integration
+        │             └── Groq / Llama 3.1 API
+        │                 (challenge generation, feedback, ESG insights)
         │
-        ├── Views (XML + OWL)
-        │       ├── Dashboard (ESG scores, department rankings)
-        │       ├── Kanban (challenge lifecycle)
-        │       ├── Leaderboard (XP rankings)
-        │       └── QWeb Reports (PDF generation)
+        ├── Views (XML)
+        │       ├── Dashboard
+        │       ├── Form Views
+        │       ├── List Views
+        │       ├── Kanban
+        │       ├── Leaderboard
+        │       └── QWeb Reports (PDF)
         │
         └── Automation
-                ├── Cron: daily score recompute
-                ├── Cron: overdue compliance flagging
-                └── Cron: badge auto-award sweep
+                ├── Cron: Daily ESG score recompute
+                ├── Cron: Overdue compliance flagging
+                └── Cron: Badge auto-award
 ```
 
 ---
