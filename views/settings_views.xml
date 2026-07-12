@@ -1,17 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_eco_res_config_settings" model="ir.ui.view">
-        <field name="name">eco.res.config.settings</field>
+    <record id="res_config_settings_view_form_ecosphere" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ecosphere</field>
         <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <form string="EcoSphere Settings">
-                <sheet>
-                    <group>
-                        <field name="env_goal_default_year"/>
-                        <field name="score_threshold"/>
-                    </group>
-                </sheet>
-            </form>
+            <xpath expr="//form" position="inside">
+                <app data-string="EcoSphere" string="EcoSphere" name="ecosphere">
+                    <block title="ESG Configuration &amp; Business Rules" name="eco_business_rules">
+                        <setting string="Auto-Emission Calculation" help="Calculate carbon automatically from daily operations.">
+                            <field name="eco_auto_emission"/>
+                        </setting>
+                        <setting string="Evidence Requirement" help="Force employees to upload proof before CSR activity approval.">
+                            <field name="eco_evidence_required"/>
+                        </setting>
+                        <setting string="Badge Auto-Award" help="Automatically give out badges when employees hit XP targets.">
+                            <field name="eco_badge_auto_award"/>
+                        </setting>
+                        <setting string="Notification System" help="Send in-app/email notifications for compliance issues and policy reminders.">
+                            <field name="eco_policy_reminders"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
         </field>
     </record>
+
+    <!-- Action to open settings -->
+    <record id="action_ecosphere_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'ecosphere'}</field>
+    </record>
+
+    <!-- Link the Action to the Menu Skeleton Person A built -->
+    <menuitem id="menu_eco_settings_config" 
+              name="Configuration" 
+              parent="menu_eco_settings" 
+              action="action_ecosphere_settings" 
+              sequence="10"/>
 </odoo>
