@@ -1,17 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="eco_badge_green_starter" model="eco.badge">
-        <field name="name">Green Starter</field>
-        <field name="description">Complete your first sustainability challenge</field>
-        <field name="rarity">common</field>
-        <field name="unlock_rule">challenge_count</field>
-        <field name="unlock_value">1</field>
-    </record>
-    <record id="eco_badge_climate_champion" model="eco.badge">
-        <field name="name">Climate Champion</field>
-        <field name="description">Earn an immense amount of points through green initiatives</field>
-        <field name="rarity">epic</field>
-        <field name="unlock_rule">xp_threshold</field>
-        <field name="unlock_value">1500</field>
-    </record>
+    <data noupdate="1">
+        
+        <!-- Eco Warrior: Awarded for 5 Challenges -->
+        <record id="badge_eco_warrior" model="esg.badge">
+            <field name="name">Eco Warrior</field>
+            <field name="description">Awarded for completing 5 Environmental Challenges.</field>
+            <field name="unlock_rule">challenge_count</field>
+            <field name="unlock_value">5</field>
+            <field name="rarity">rare</field>
+        </record>
+
+        <!-- ESG Master: Awarded for 1000 XP -->
+        <record id="badge_xp_master" model="esg.badge">
+            <field name="name">ESG Master</field>
+            <field name="description">Awarded for reaching 1000 total XP across all ESG activities.</field>
+            <field name="unlock_rule">xp_threshold</field>
+            <field name="unlock_value">1000</field>
+            <field name="rarity">epic</field>
+        </record>
+
+    </data>
 </odoo>

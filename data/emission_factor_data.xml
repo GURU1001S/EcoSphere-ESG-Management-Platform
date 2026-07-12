@@ -1,15 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="eco_ef_transport" model="eco.emission.factor">
-        <field name="name">Transport</field>
-        <field name="source">GHG Protocol</field>
-        <field name="factor">0.21</field>
-        <field name="unit">kg CO2e/km</field>
-    </record>
-    <record id="eco_ef_energy" model="eco.emission.factor">
-        <field name="name">Energy</field>
-        <field name="source">EPA</field>
-        <field name="factor">0.45</field>
-        <field name="unit">kg CO2e/kWh</field>
-    </record>
+    <data noupdate="1">
+        
+        <!-- Standard Electricity -->
+        <record id="ef_grid_electricity" model="esg.emission.factor">
+            <field name="name">Grid Electricity (Standard)</field>
+            <field name="factor_value">0.82</field>
+            <field name="unit_of_measure">kg CO2e / kWh</field>
+        </record>
+
+        <!-- Diesel Fuel -->
+        <record id="ef_diesel_generator" model="esg.emission.factor">
+            <field name="name">Diesel (Generators)</field>
+            <field name="factor_value">2.68</field>
+            <field name="unit_of_measure">kg CO2e / Liter</field>
+        </record>
+
+        <!-- Commercial Flights -->
+        <record id="ef_air_travel" model="esg.emission.factor">
+            <field name="name">Air Travel (Commercial)</field>
+            <field name="factor_value">0.15</field>
+            <field name="unit_of_measure">kg CO2e / km</field>
+        </record>
+
+    </data>
 </odoo>
