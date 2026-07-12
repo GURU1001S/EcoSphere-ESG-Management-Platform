@@ -5,14 +5,14 @@
     <!-- ECO.CHALLENGE VIEWS                            -->
     <!-- ============================================== -->
     <record id="view_eco_challenge_form" model="ir.ui.view">
-        <field name="name">eco.challenge.form</field>
-        <field name="model">eco.challenge</field>
+        <field name="name">esg.challenge.form</field>
+        <field name="model">esg.challenge</field>
         <field name="arch" type="xml">
             <form>
                 <header>
                     <button name="action_activate" string="Activate" type="object" class="oe_highlight" invisible="status != 'draft'"/>
                     <button name="action_submit" string="Submit for Review" type="object" class="oe_highlight" invisible="status != 'active'"/>
-                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="status != 'review'"/>
+                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="status != 'under_review'"/>
                     <button name="action_archive" string="Archive" type="object" invisible="status in ('archived', 'completed')"/>
                     <field name="status" widget="statusbar" statusbar_visible="draft,active,review,completed"/>
                 </header>
@@ -54,8 +54,8 @@
     </record>
 
     <record id="view_eco_challenge_tree" model="ir.ui.view">
-        <field name="name">eco.challenge.tree</field>
-        <field name="model">eco.challenge</field>
+        <field name="name">esg.challenge.tree</field>
+        <field name="model">esg.challenge</field>
         <field name="arch" type="xml">
             <tree string="Challenges">
                 <header>
@@ -71,8 +71,8 @@
     </record>
 
     <record id="view_eco_challenge_kanban" model="ir.ui.view">
-        <field name="name">eco.challenge.kanban</field>
-        <field name="model">eco.challenge</field>
+        <field name="name">esg.challenge.kanban</field>
+        <field name="model">esg.challenge</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_mobile">
                 <field name="name"/>
@@ -114,8 +114,8 @@
     <!-- ECO.CHALLENGE.PARTICIPATION VIEWS              -->
     <!-- ============================================== -->
     <record id="view_eco_challenge_participation_form" model="ir.ui.view">
-        <field name="name">eco.challenge.participation.form</field>
-        <field name="model">eco.challenge.participation</field>
+        <field name="name">esg.challenge.participation.form</field>
+        <field name="model">esg.challenge.participation</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -160,8 +160,8 @@
     </record>
 
     <record id="view_eco_challenge_participation_tree" model="ir.ui.view">
-        <field name="name">eco.challenge.participation.tree</field>
-        <field name="model">eco.challenge.participation</field>
+        <field name="name">esg.challenge.participation.tree</field>
+        <field name="model">esg.challenge.participation</field>
         <field name="arch" type="xml">
             <tree string="Participations">
                 <field name="challenge_id"/>
@@ -178,8 +178,8 @@
     <!-- ECO.BADGE VIEWS                                -->
     <!-- ============================================== -->
     <record id="view_eco_badge_kanban" model="ir.ui.view">
-        <field name="name">eco.badge.kanban</field>
-        <field name="model">eco.badge</field>
+        <field name="name">esg.badge.kanban</field>
+        <field name="model">esg.badge</field>
         <field name="arch" type="xml">
             <kanban default_group_by="badge_family_id">
                 <field name="name"/>
@@ -209,8 +209,8 @@
     </record>
     
     <record id="view_eco_badge_form" model="ir.ui.view">
-        <field name="name">eco.badge.form</field>
-        <field name="model">eco.badge</field>
+        <field name="name">esg.badge.form</field>
+        <field name="model">esg.badge</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -240,8 +240,8 @@
     <!-- ECO.REWARD VIEWS                               -->
     <!-- ============================================== -->
     <record id="view_eco_reward_tree" model="ir.ui.view">
-        <field name="name">eco.reward.tree</field>
-        <field name="model">eco.reward</field>
+        <field name="name">esg.reward.tree</field>
+        <field name="model">esg.reward</field>
         <field name="arch" type="xml">
             <tree string="Rewards" default_order="status asc, points_required asc">
                 <field name="name"/>
@@ -255,8 +255,8 @@
     </record>
     
     <record id="view_eco_reward_form" model="ir.ui.view">
-        <field name="name">eco.reward.form</field>
-        <field name="model">eco.reward</field>
+        <field name="name">esg.reward.form</field>
+        <field name="model">esg.reward</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -290,25 +290,25 @@
     <!-- ============================================== -->
     <record id="action_eco_challenge" model="ir.actions.act_window">
         <field name="name">Challenges</field>
-        <field name="res_model">eco.challenge</field>
+        <field name="res_model">esg.challenge</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
     <record id="action_eco_challenge_participation" model="ir.actions.act_window">
         <field name="name">Challenge Participations</field>
-        <field name="res_model">eco.challenge.participation</field>
+        <field name="res_model">esg.challenge.participation</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <record id="action_eco_badge" model="ir.actions.act_window">
         <field name="name">Badges</field>
-        <field name="res_model">eco.badge</field>
+        <field name="res_model">esg.badge</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
     <record id="action_eco_reward" model="ir.actions.act_window">
         <field name="name">Rewards</field>
-        <field name="res_model">eco.reward</field>
+        <field name="res_model">esg.reward</field>
         <field name="view_mode">tree,form</field>
     </record>
 
