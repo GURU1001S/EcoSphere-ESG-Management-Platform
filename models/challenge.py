@@ -117,23 +117,27 @@ class EcoChallenge(models.Model):
         if not api_key:
             raise UserError("Grok API key is missing. Please add 'ecosphere.grok_api_key' in Settings > System Parameters.")
             
-        url = "https://api.x.ai/v1/chat/completions"
+        url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "grok-beta",
+            "model": "llama-3.1-8b-instant",
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.7
         }
         
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=15)
+            if response.status_code != 200:
+                raise UserError(f"API Error {response.status_code}: {response.text}")
             response.raise_for_status()
             res_json = response.json()
             return res_json['choices'][0]['message']['content']
         except Exception as e:
+            if isinstance(e, UserError):
+                raise e
             _logger.error(f"Grok API failed: {str(e)}")
             raise UserError(f"Failed to communicate with Grok API: {str(e)}")
 
