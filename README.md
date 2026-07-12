@@ -1,4 +1,6 @@
-![EcoSphere](https://raw.githubusercontent.com/GURU1001S/EcoSphere-ESG-Management-Platform/main/static/description/icon.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/GURU1001S/EcoSphere-ESG-Management-Platform/main/static/description/icon.png" width="120" />
+</p>
 
 # 🌱 EcoSphere — ESG Management Platform
 
