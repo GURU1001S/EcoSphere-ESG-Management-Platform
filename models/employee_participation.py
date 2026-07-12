@@ -6,13 +6,13 @@ from odoo.exceptions import UserError, ValidationError
 _logger = logging.getLogger(__name__)
 
 class EcoEmployeeParticipation(models.Model):
-    _name = 'eco.employee.participation'
+    _name = 'esg.employee.participation'
     _description = 'CSR Activity Participation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
 
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True, tracking=True)
-    activity_id = fields.Many2one('eco.csr.activity', string='CSR Activity', required=True, tracking=True)
+    activity_id = fields.Many2one('esg.csr.activity', string='CSR Activity', required=True, tracking=True)
     
     proof = fields.Binary(string='Proof File')
     proof_filename = fields.Char(string='Proof Filename')
@@ -107,50 +107,8 @@ class EcoEmployeeParticipation(models.Model):
         )
 
     def _score_impact_with_ai(self):
-        """Calls Grok to rate the self-reported impact from 1-10 defensively."""
-        api_key = self.env['ir.config_parameter'].sudo().get_param('ecosphere.grok_api_key')
-        if not api_key:
+        """Scores the self-reported impact heuristically based on length/effort."""
+        if not self.self_reported_impact:
             self.ai_impact_score = 5
-            self.message_post(body="⚠️ AI Scoring skipped (Missing API Key). Defaulted impact score to 5/10.")
             return
-        
-        prompt = (
-            f"Rate the following described impact for genuineness and substance on a scale of 1 to 10.\n"
-            f"Impact Description: {self.self_reported_impact}\n"
-            f"Return ONLY a single integer number between 1 and 10. Do not include any other text or explanation."
-        )
-        
-        url = "https://api.groq.com/openai/v1/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "llama-3.1-8b-instant",
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.1 # Low temp for strictly formatting output
-        }
-        
-        try:
-            import requests
-            import re
-            
-            response = requests.post(url, headers=headers, json=payload, timeout=8)
-            response.raise_for_status()
-            res_text = response.json()['choices'][0]['message']['content'].strip()
-            
-            # Defensively extract the first number found
-            numbers = re.findall(r'\d+', res_text)
-            if numbers:
-                score = int(numbers[0])
-                self.ai_impact_score = max(1, min(10, score)) # Clamp between 1-10
-                self.message_post(body=f"🤖 AI Coach evaluated the impact score as: {self.ai_impact_score}/10")
-            else:
-                raise ValueError("No numbers returned.")
-                
-        except Exception as e:
-            _logger.error(f"AI Impact Scoring failed: {str(e)}")
-            self.ai_impact_score = 5
-            self.message_post(body="⚠️ AI Scoring API unreachable. Defaulted impact score to 5/10 to avoid blocking approval.")
-
 
