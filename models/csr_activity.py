@@ -131,13 +131,13 @@ class EcoCSRActivity(models.Model):
         if not api_key:
             self.message_post(body="✅ Activity completed. *(AI Summary skipped: Missing API Key)*")
             return
-        url = "https://api.x.ai/v1/chat/completions"
+        url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "grok-beta",
+            "model": "llama-3.1-8b-instant",
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.5
         }
