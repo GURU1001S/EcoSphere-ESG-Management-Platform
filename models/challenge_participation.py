@@ -6,12 +6,12 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 class EcoChallengeParticipation(models.Model):
-    _name = 'eco.challenge.participation'
+    _name = 'esg.challenge.participation'
     _description = 'Challenge Participation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
 
-    challenge_id = fields.Many2one('eco.challenge', string='Challenge', required=True, tracking=True)
+    challenge_id = fields.Many2one('esg.challenge', string='Challenge', required=True, tracking=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True, tracking=True)
     progress = fields.Integer(string='Progress (%)', default=0, tracking=True)
     proof = fields.Binary(string='Proof File')
@@ -60,7 +60,7 @@ class EcoChallengeParticipation(models.Model):
                 ]
                 if rec.id:
                     domain.append(('id', '<', rec.id))
-                rec.attempt_number = self.env['eco.challenge.participation'].search_count(domain) + 1
+                rec.attempt_number = self.env['esg.challenge.participation'].search_count(domain) + 1
             else:
                 rec.attempt_number = 1
 
@@ -146,7 +146,7 @@ class EcoChallengeParticipation(models.Model):
             auto_award = config.get_param('ecosphere.badge_auto_award', False)
             
             if auto_award:
-                unlocked_badges = self.env['eco.badge'].search([('employee_ids', '!=', self.employee_id.id)])
+                unlocked_badges = self.env['esg.badge'].search([('employee_ids', '!=', self.employee_id.id)])
                 for badge in unlocked_badges:
                     if badge.check_unlock(self.employee_id):
                         badge.employee_ids = [(4, self.employee_id.id)]
@@ -160,7 +160,7 @@ class EcoChallengeParticipation(models.Model):
                     ('approval_status', '=', 'approved')
                 ])
                 if approved_count <= 10:
-                    early_badge = self.env['eco.badge'].search([('unlock_rule', '=', 'early_adopter')], limit=1)
+                    early_badge = self.env['esg.badge'].search([('unlock_rule', '=', 'early_adopter')], limit=1)
                     if early_badge and self.employee_id.id not in early_badge.employee_ids.ids:
                         early_badge.employee_ids = [(4, self.employee_id.id)]
                         self.employee_id.message_post(
@@ -179,45 +179,16 @@ class EcoChallengeParticipation(models.Model):
         )
         
     def _generate_ai_feedback(self):
-        """Calls Grok API to generate a personalized motivational message."""
-        api_key = self.env['ir.config_parameter'].sudo().get_param('ecosphere.grok_api_key')
-        if not api_key:
-            self.message_post(body="✅ Participation approved. *(AI Feedback disabled: Missing API Key)*")
-            return
+        """Generates a static personalized motivational message."""
+        if self.xp_awarded > 15:
+            res_text = f"Incredible work, {self.employee_id.name}! Your dedication to {self.challenge_id.name} is outstanding and earned you {self.xp_awarded} points!"
+        else:
+            res_text = f"Great job on completing {self.challenge_id.name}, {self.employee_id.name}! Keep up the consistent effort."
             
-        prompt = (
-            f"You are a motivational ESG coach. Employee '{self.employee_id.name}' just completed the "
-            f"challenge '{self.challenge_id.name}' and earned {self.xp_awarded} XP. "
-            f"Their engagement score was {self.engagement_score}/10 on this task. "
-            f"Write a short, engaging, 2-3 sentence motivational feedback paragraph to congratulate them. "
-            f"Do not include quotes or markdown blocks, just the raw text."
-        )
-            
-        url = "https://api.groq.com/openai/v1/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "llama-3.1-8b-instant",
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.7
-        }
+        self.ai_feedback = res_text
         
-        try:
-            import requests
-            response = requests.post(url, headers=headers, json=payload, timeout=10)
-            response.raise_for_status()
-            res_text = response.json()['choices'][0]['message']['content'].strip()
-            
-            self.ai_feedback = res_text
-            
-            partner_ids = [self.employee_id.user_id.partner_id.id] if self.employee_id and self.employee_id.user_id else []
-            self.message_post(
-                body=f"<b>AI Coach:</b><br/>{res_text}",
-                partner_ids=partner_ids
-            )
-        except Exception as e:
-            _logger.error(f"Failed Grok AI Feedback: {str(e)}")
-            self.ai_feedback = "Great job completing the challenge!"
-            self.message_post(body="✅ Participation approved. *(AI Feedback currently unavailable)*")
+        partner_ids = [self.employee_id.user_id.partner_id.id] if self.employee_id and self.employee_id.user_id else []
+        self.message_post(
+            body=f"<b>Motivational Feedback:</b><br/>{res_text}",
+            partner_ids=partner_ids
+        )
