@@ -23,5 +23,23 @@
             <field name="unit_of_measure">kg CO2e / km</field>
         </record>
 
+        <record id="ef_office_paper" model="esg.emission.factor">
+            <field name="name">Office Paper</field>
+            <field name="factor_value">1.30</field>
+            <field name="unit_of_measure">kg CO2e / kg</field>
+        </record>
+
+        <record id="ef_landfill_waste" model="esg.emission.factor">
+            <field name="name">Landfill Waste</field>
+            <field name="factor_value">0.45</field>
+            <field name="unit_of_measure">kg CO2e / kg</field>
+        </record>
+
+        <record id="ef_water_supply" model="esg.emission.factor">
+            <field name="name">Water Supply</field>
+            <field name="factor_value">0.34</field>
+            <field name="unit_of_measure">kg CO2e / cubic meter</field>
+        </record>
+
     </data>
 </odoo>

@@ -1,15 +1,716 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="eco_department_main" model="esg.department">
-        <field name="name">Global Operations</field>
-    </record>
-    <record id="eco_category_energy" model="esg.category">
-        <field name="name">Energy</field>
-        <field name="type">challenge</field>
-    </record>
-    <record id="eco_challenge_recycle" model="esg.challenge">
-        <field name="name">Recycle More</field>
-        <field name="description">Encourage recycling across offices</field>
-        <field name="category_id" ref="eco_category_energy"/>
-    </record>
+    <data>
+        <!-- Departments -->
+        <record id="eco_department_main" model="esg.department">
+            <field name="name">Global Operations</field>
+            <field name="code">GOPS</field>
+            <field name="employee_count">120</field>
+            <field name="status">active</field>
+        </record>
+        <record id="eco_department_procurement" model="esg.department">
+            <field name="name">Sustainable Procurement</field>
+            <field name="code">PROC</field>
+            <field name="parent_id" ref="eco_department_main"/>
+            <field name="employee_count">34</field>
+            <field name="status">active</field>
+        </record>
+        <record id="eco_department_manufacturing" model="esg.department">
+            <field name="name">Green Manufacturing</field>
+            <field name="code">MFG</field>
+            <field name="parent_id" ref="eco_department_main"/>
+            <field name="employee_count">86</field>
+            <field name="status">active</field>
+        </record>
+        <record id="eco_department_people" model="esg.department">
+            <field name="name">People &amp; Community</field>
+            <field name="code">PEOP</field>
+            <field name="parent_id" ref="eco_department_main"/>
+            <field name="employee_count">28</field>
+            <field name="status">active</field>
+        </record>
+        <record id="eco_department_compliance" model="esg.department">
+            <field name="name">Governance &amp; Compliance</field>
+            <field name="code">GOV</field>
+            <field name="parent_id" ref="eco_department_main"/>
+            <field name="employee_count">18</field>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Employees -->
+        <record id="employee_anika" model="hr.employee">
+            <field name="name">Anika Rao</field>
+            <field name="work_email">anika.rao@example.com</field>
+            <field name="esg_department_id" ref="eco_department_procurement"/>
+            <field name="xp">420</field>
+            <field name="points">260</field>
+            <field name="sentiment_tag">motivated</field>
+            <field name="strongest_pillar">environmental</field>
+        </record>
+        <record id="employee_rohan" model="hr.employee">
+            <field name="name">Rohan Mehta</field>
+            <field name="work_email">rohan.mehta@example.com</field>
+            <field name="esg_department_id" ref="eco_department_manufacturing"/>
+            <field name="xp">180</field>
+            <field name="points">140</field>
+            <field name="sentiment_tag">consistent</field>
+            <field name="strongest_pillar">social</field>
+        </record>
+        <record id="employee_maya" model="hr.employee">
+            <field name="name">Maya Iyer</field>
+            <field name="work_email">maya.iyer@example.com</field>
+            <field name="esg_department_id" ref="eco_department_people"/>
+            <field name="xp">760</field>
+            <field name="points">390</field>
+            <field name="sentiment_tag">champion</field>
+            <field name="strongest_pillar">social</field>
+        </record>
+        <record id="employee_dev" model="hr.employee">
+            <field name="name">Dev Kulkarni</field>
+            <field name="work_email">dev.kulkarni@example.com</field>
+            <field name="esg_department_id" ref="eco_department_compliance"/>
+            <field name="xp">310</field>
+            <field name="points">210</field>
+            <field name="sentiment_tag">motivated</field>
+            <field name="strongest_pillar">governance</field>
+        </record>
+        <record id="employee_sara" model="hr.employee">
+            <field name="name">Sara D'Souza</field>
+            <field name="work_email">sara.dsouza@example.com</field>
+            <field name="esg_department_id" ref="eco_department_main"/>
+            <field name="xp">90</field>
+            <field name="points">75</field>
+            <field name="sentiment_tag">struggling</field>
+            <field name="strongest_pillar">environmental</field>
+        </record>
+
+        <record id="eco_department_procurement" model="esg.department">
+            <field name="head_id" ref="employee_anika"/>
+        </record>
+        <record id="eco_department_manufacturing" model="esg.department">
+            <field name="head_id" ref="employee_rohan"/>
+        </record>
+        <record id="eco_department_people" model="esg.department">
+            <field name="head_id" ref="employee_maya"/>
+        </record>
+        <record id="eco_department_compliance" model="esg.department">
+            <field name="head_id" ref="employee_dev"/>
+        </record>
+        <record id="eco_department_main" model="esg.department">
+            <field name="head_id" ref="employee_sara"/>
+        </record>
+
+        <!-- Categories -->
+        <record id="eco_category_energy" model="esg.category">
+            <field name="name">Energy Efficiency</field>
+            <field name="type">challenge</field>
+        </record>
+        <record id="eco_category_waste" model="esg.category">
+            <field name="name">Waste Reduction</field>
+            <field name="type">challenge</field>
+        </record>
+        <record id="eco_category_policy" model="esg.category">
+            <field name="name">Governance Readiness</field>
+            <field name="type">challenge</field>
+        </record>
+        <record id="eco_category_volunteer" model="esg.category">
+            <field name="name">Community Volunteering</field>
+            <field name="type">csr</field>
+        </record>
+        <record id="eco_category_wellbeing" model="esg.category">
+            <field name="name">Employee Wellbeing</field>
+            <field name="type">csr</field>
+        </record>
+
+        <!-- Environmental Goals -->
+        <record id="goal_procurement_packaging" model="esg.environmental.goal">
+            <field name="name">Reduce Packaging Emissions</field>
+            <field name="department_id" ref="eco_department_procurement"/>
+            <field name="target_emission">950</field>
+            <field name="deadline">2026-09-30</field>
+            <field name="status">on_track</field>
+        </record>
+        <record id="goal_manufacturing_energy" model="esg.environmental.goal">
+            <field name="name">Lower Factory Energy Intensity</field>
+            <field name="department_id" ref="eco_department_manufacturing"/>
+            <field name="target_emission">1800</field>
+            <field name="deadline">2026-10-31</field>
+            <field name="status">at_risk</field>
+        </record>
+        <record id="goal_people_commute" model="esg.environmental.goal">
+            <field name="name">Cut Employee Commute Footprint</field>
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="target_emission">420</field>
+            <field name="deadline">2026-08-31</field>
+            <field name="status">on_track</field>
+        </record>
+        <record id="goal_compliance_paperless" model="esg.environmental.goal">
+            <field name="name">Paperless Governance Reviews</field>
+            <field name="department_id" ref="eco_department_compliance"/>
+            <field name="target_emission">180</field>
+            <field name="deadline">2026-07-31</field>
+            <field name="status">achieved</field>
+        </record>
+        <record id="goal_global_fleet" model="esg.environmental.goal">
+            <field name="name">Optimize Fleet Fuel Usage</field>
+            <field name="department_id" ref="eco_department_main"/>
+            <field name="target_emission">1250</field>
+            <field name="deadline">2026-12-31</field>
+            <field name="status">on_track</field>
+        </record>
+
+        <!-- Carbon Transactions -->
+        <record id="carbon_txn_grid_procurement" model="carbon.transaction">
+            <field name="name">CAR/DEMO/001</field>
+            <field name="department_id" ref="eco_department_procurement"/>
+            <field name="emission_factor_id" ref="ef_grid_electricity"/>
+            <field name="date">2026-07-01</field>
+            <field name="quantity">620</field>
+            <field name="source_type">purchase</field>
+            <field name="source_ref">PO/2026/001</field>
+        </record>
+        <record id="carbon_txn_diesel_mfg" model="carbon.transaction">
+            <field name="name">CAR/DEMO/002</field>
+            <field name="department_id" ref="eco_department_manufacturing"/>
+            <field name="emission_factor_id" ref="ef_diesel_generator"/>
+            <field name="date">2026-07-03</field>
+            <field name="quantity">210</field>
+            <field name="source_type">manufacturing</field>
+            <field name="source_ref">MO/2026/014</field>
+        </record>
+        <record id="carbon_txn_air_people" model="carbon.transaction">
+            <field name="name">CAR/DEMO/003</field>
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="emission_factor_id" ref="ef_air_travel"/>
+            <field name="date">2026-07-05</field>
+            <field name="quantity">850</field>
+            <field name="source_type">expense</field>
+            <field name="source_ref">EXP/2026/022</field>
+        </record>
+        <record id="carbon_txn_paper_compliance" model="carbon.transaction">
+            <field name="name">CAR/DEMO/004</field>
+            <field name="department_id" ref="eco_department_compliance"/>
+            <field name="emission_factor_id" ref="ef_office_paper"/>
+            <field name="date">2026-07-06</field>
+            <field name="quantity">45</field>
+            <field name="source_type">manual</field>
+            <field name="source_ref">Manual Review Pack</field>
+        </record>
+        <record id="carbon_txn_fleet_global" model="carbon.transaction">
+            <field name="name">CAR/DEMO/005</field>
+            <field name="department_id" ref="eco_department_main"/>
+            <field name="emission_factor_id" ref="ef_diesel_generator"/>
+            <field name="date">2026-07-08</field>
+            <field name="quantity">320</field>
+            <field name="source_type">fleet</field>
+            <field name="source_ref">FLEET/SVC/2026/009</field>
+        </record>
+
+        <!-- CSR Activities -->
+        <record id="csr_beach_cleanup" model="esg.csr.activity">
+            <field name="name">Beach Cleanup Drive</field>
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="start_date">2026-07-15</field>
+            <field name="end_date">2026-07-15</field>
+            <field name="state">active</field>
+            <field name="points_reward">80</field>
+            <field name="target_sdg">sdg14</field>
+            <field name="expected_impact">Remove plastic waste from the local shoreline.</field>
+            <field name="carbon_offset_kg">35</field>
+        </record>
+        <record id="csr_school_workshop" model="esg.csr.activity">
+            <field name="name">School Sustainability Workshop</field>
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="start_date">2026-07-20</field>
+            <field name="end_date">2026-07-20</field>
+            <field name="state">active</field>
+            <field name="points_reward">70</field>
+            <field name="target_sdg">sdg4</field>
+            <field name="expected_impact">Teach students waste sorting and water-saving habits.</field>
+        </record>
+        <record id="csr_tree_planting" model="esg.csr.activity">
+            <field name="name">Urban Tree Planting</field>
+            <field name="department_id" ref="eco_department_main"/>
+            <field name="start_date">2026-08-03</field>
+            <field name="end_date">2026-08-03</field>
+            <field name="state">draft</field>
+            <field name="points_reward">90</field>
+            <field name="target_sdg">sdg15</field>
+            <field name="expected_impact">Plant native shade trees around office neighborhoods.</field>
+        </record>
+        <record id="csr_blood_donation" model="esg.csr.activity">
+            <field name="name">Employee Blood Donation Camp</field>
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="start_date">2026-08-10</field>
+            <field name="end_date">2026-08-10</field>
+            <field name="state">active</field>
+            <field name="points_reward">60</field>
+            <field name="target_sdg">sdg3</field>
+            <field name="expected_impact">Support local hospital blood bank requirements.</field>
+        </record>
+        <record id="csr_e_waste" model="esg.csr.activity">
+            <field name="name">E-Waste Collection Week</field>
+            <field name="department_id" ref="eco_department_procurement"/>
+            <field name="start_date">2026-08-17</field>
+            <field name="end_date">2026-08-21</field>
+            <field name="state">active</field>
+            <field name="points_reward">75</field>
+            <field name="target_sdg">sdg12</field>
+            <field name="expected_impact">Collect and route old devices to certified recyclers.</field>
+        </record>
+
+        <!-- CSR Participation -->
+        <record id="csr_participation_anika" model="esg.employee.participation">
+            <field name="employee_id" ref="employee_anika"/>
+            <field name="activity_id" ref="csr_e_waste"/>
+            <field name="approval_status">approved</field>
+            <field name="points_earned">68</field>
+            <field name="completion_date">2026-08-21</field>
+            <field name="impact_category">environmental</field>
+            <field name="self_reported_impact">Collected unused chargers, phones, and accessories from three office floors.</field>
+            <field name="ai_impact_score">8</field>
+            <field name="verified_hours">4</field>
+        </record>
+        <record id="csr_participation_rohan" model="esg.employee.participation">
+            <field name="employee_id" ref="employee_rohan"/>
+            <field name="activity_id" ref="csr_tree_planting"/>
+            <field name="approval_status">pending</field>
+            <field name="completion_date">2026-08-03</field>
+            <field name="impact_category">environmental</field>
+            <field name="self_reported_impact">Helped prepare planting pits and supported the local volunteer group.</field>
+            <field name="ai_impact_score">7</field>
+            <field name="verified_hours">3</field>
+        </record>
+        <record id="csr_participation_maya" model="esg.employee.participation">
+            <field name="employee_id" ref="employee_maya"/>
+            <field name="activity_id" ref="csr_beach_cleanup"/>
+            <field name="approval_status">approved</field>
+            <field name="points_earned">80</field>
+            <field name="completion_date">2026-07-15</field>
+            <field name="impact_category">community</field>
+            <field name="self_reported_impact">Coordinated volunteer teams and documented waste bags collected.</field>
+            <field name="ai_impact_score">9</field>
+            <field name="verified_hours">5</field>
+        </record>
+        <record id="csr_participation_dev" model="esg.employee.participation">
+            <field name="employee_id" ref="employee_dev"/>
+            <field name="activity_id" ref="csr_school_workshop"/>
+            <field name="approval_status">approved</field>
+            <field name="points_earned">56</field>
+            <field name="completion_date">2026-07-20</field>
+            <field name="impact_category">social</field>
+            <field name="self_reported_impact">Presented policy basics for responsible waste management to students.</field>
+            <field name="ai_impact_score">8</field>
+            <field name="verified_hours">2</field>
+        </record>
+        <record id="csr_participation_sara" model="esg.employee.participation">
+            <field name="employee_id" ref="employee_sara"/>
+            <field name="activity_id" ref="csr_blood_donation"/>
+            <field name="approval_status">pending</field>
+            <field name="completion_date">2026-08-10</field>
+            <field name="impact_category">health</field>
+            <field name="self_reported_impact">Registered for donation and helped welcome employees.</field>
+            <field name="ai_impact_score">6</field>
+            <field name="verified_hours">1.5</field>
+        </record>
+
+        <!-- Challenges -->
+        <record id="eco_challenge_recycle" model="esg.challenge">
+            <field name="name">Recycle More</field>
+            <field name="category_id" ref="eco_category_waste"/>
+            <field name="description">Set up labeled recycling bins and log weekly adoption.</field>
+            <field name="xp_reward">50</field>
+            <field name="difficulty">easy</field>
+            <field name="deadline">2026-08-15</field>
+            <field name="department_id" ref="eco_department_main"/>
+            <field name="status">active</field>
+        </record>
+        <record id="challenge_energy_saver" model="esg.challenge">
+            <field name="name">Energy Saver Sprint</field>
+            <field name="category_id" ref="eco_category_energy"/>
+            <field name="description">Reduce after-hours energy usage for five working days.</field>
+            <field name="xp_reward">70</field>
+            <field name="difficulty">medium</field>
+            <field name="deadline">2026-08-22</field>
+            <field name="department_id" ref="eco_department_manufacturing"/>
+            <field name="status">active</field>
+        </record>
+        <record id="challenge_zero_waste_lunch" model="esg.challenge">
+            <field name="name">Zero Waste Lunch Week</field>
+            <field name="category_id" ref="eco_category_waste"/>
+            <field name="description">Use reusable containers and avoid disposable lunch packaging.</field>
+            <field name="xp_reward">65</field>
+            <field name="difficulty">medium</field>
+            <field name="deadline">2026-09-05</field>
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="status">active</field>
+        </record>
+        <record id="challenge_policy_review" model="esg.challenge">
+            <field name="name">Policy Review Champion</field>
+            <field name="category_id" ref="eco_category_policy"/>
+            <field name="description">Review pending ESG policies and submit key improvement notes.</field>
+            <field name="xp_reward">80</field>
+            <field name="difficulty">hard</field>
+            <field name="deadline">2026-08-30</field>
+            <field name="department_id" ref="eco_department_compliance"/>
+            <field name="status">active</field>
+        </record>
+        <record id="challenge_commute_shift" model="esg.challenge">
+            <field name="name">Low Carbon Commute</field>
+            <field name="category_id" ref="eco_category_energy"/>
+            <field name="description">Use public transport, carpooling, cycling, or remote work twice this week.</field>
+            <field name="xp_reward">45</field>
+            <field name="difficulty">easy</field>
+            <field name="deadline">2026-08-12</field>
+            <field name="department_id" ref="eco_department_procurement"/>
+            <field name="status">active</field>
+        </record>
+
+        <!-- Challenge Participation -->
+        <record id="challenge_participation_anika" model="esg.challenge.participation">
+            <field name="challenge_id" ref="challenge_commute_shift"/>
+            <field name="employee_id" ref="employee_anika"/>
+            <field name="progress">100</field>
+            <field name="approval_status">approved</field>
+            <field name="xp_awarded">45</field>
+            <field name="started_date">2026-08-05</field>
+            <field name="submitted_date">2026-08-09</field>
+            <field name="completion_date">2026-08-09</field>
+            <field name="ai_feedback">Great consistency in adopting lower-carbon commute choices.</field>
+            <field name="sentiment_tag">motivated</field>
+        </record>
+        <record id="challenge_participation_rohan" model="esg.challenge.participation">
+            <field name="challenge_id" ref="challenge_energy_saver"/>
+            <field name="employee_id" ref="employee_rohan"/>
+            <field name="progress">75</field>
+            <field name="approval_status">pending</field>
+            <field name="started_date">2026-08-10</field>
+            <field name="submitted_date">2026-08-16</field>
+            <field name="sentiment_tag">consistent</field>
+        </record>
+        <record id="challenge_participation_maya" model="esg.challenge.participation">
+            <field name="challenge_id" ref="challenge_zero_waste_lunch"/>
+            <field name="employee_id" ref="employee_maya"/>
+            <field name="progress">100</field>
+            <field name="approval_status">approved</field>
+            <field name="xp_awarded">65</field>
+            <field name="started_date">2026-08-01</field>
+            <field name="submitted_date">2026-08-05</field>
+            <field name="completion_date">2026-08-05</field>
+            <field name="ai_feedback">Strong example-setting for the department.</field>
+            <field name="sentiment_tag">motivated</field>
+        </record>
+        <record id="challenge_participation_dev" model="esg.challenge.participation">
+            <field name="challenge_id" ref="challenge_policy_review"/>
+            <field name="employee_id" ref="employee_dev"/>
+            <field name="progress">90</field>
+            <field name="approval_status">approved</field>
+            <field name="xp_awarded">80</field>
+            <field name="started_date">2026-08-11</field>
+            <field name="submitted_date">2026-08-18</field>
+            <field name="completion_date">2026-08-18</field>
+            <field name="ai_feedback">Detailed governance review with practical next steps.</field>
+            <field name="sentiment_tag">motivated</field>
+        </record>
+        <record id="challenge_participation_sara" model="esg.challenge.participation">
+            <field name="challenge_id" ref="eco_challenge_recycle"/>
+            <field name="employee_id" ref="employee_sara"/>
+            <field name="progress">40</field>
+            <field name="approval_status">pending</field>
+            <field name="started_date">2026-08-01</field>
+            <field name="sentiment_tag">struggling</field>
+        </record>
+
+        <!-- Rewards and Redemptions -->
+        <record id="reward_bamboo_bottle" model="esg.reward">
+            <field name="name">Reusable Bamboo Bottle</field>
+            <field name="description">Reusable bottle for daily office use.</field>
+            <field name="points_required">120</field>
+            <field name="stock">25</field>
+            <field name="reward_category">sustainability_product</field>
+            <field name="target_sentiment">all</field>
+        </record>
+        <record id="reward_learning_credit" model="esg.reward">
+            <field name="name">Sustainability Course Credit</field>
+            <field name="description">Learning credit for an ESG or climate course.</field>
+            <field name="points_required">300</field>
+            <field name="stock">10</field>
+            <field name="reward_category">learning</field>
+            <field name="target_sentiment">high_performer</field>
+        </record>
+        <record id="reward_wellness_day" model="esg.reward">
+            <field name="name">Wellness Afternoon Pass</field>
+            <field name="description">Half-day wellness benefit for active contributors.</field>
+            <field name="points_required">220</field>
+            <field name="stock">8</field>
+            <field name="reward_category">wellness</field>
+            <field name="target_sentiment">all</field>
+            <field name="discount_for_streak">1</field>
+        </record>
+        <record id="reward_team_lunch" model="esg.reward">
+            <field name="name">Green Team Lunch</field>
+            <field name="description">Plant-forward lunch voucher for a project team.</field>
+            <field name="points_required">180</field>
+            <field name="stock">15</field>
+            <field name="reward_category">experience</field>
+            <field name="target_sentiment">struggling</field>
+        </record>
+        <record id="reward_spotlight" model="esg.reward">
+            <field name="name">Leadership Spotlight</field>
+            <field name="description">Recognition in the monthly ESG townhall.</field>
+            <field name="points_required">250</field>
+            <field name="stock">5</field>
+            <field name="reward_category">recognition</field>
+            <field name="target_sentiment">high_performer</field>
+        </record>
+
+        <record id="redemption_anika_bottle" model="esg.reward.redemption">
+            <field name="employee_id" ref="employee_anika"/>
+            <field name="reward_id" ref="reward_bamboo_bottle"/>
+            <field name="redeemed_on">2026-07-25</field>
+            <field name="points_spent">120</field>
+        </record>
+        <record id="redemption_rohan_lunch" model="esg.reward.redemption">
+            <field name="employee_id" ref="employee_rohan"/>
+            <field name="reward_id" ref="reward_team_lunch"/>
+            <field name="redeemed_on">2026-07-26</field>
+            <field name="points_spent">180</field>
+        </record>
+        <record id="redemption_maya_course" model="esg.reward.redemption">
+            <field name="employee_id" ref="employee_maya"/>
+            <field name="reward_id" ref="reward_learning_credit"/>
+            <field name="redeemed_on">2026-07-27</field>
+            <field name="points_spent">300</field>
+        </record>
+        <record id="redemption_dev_spotlight" model="esg.reward.redemption">
+            <field name="employee_id" ref="employee_dev"/>
+            <field name="reward_id" ref="reward_spotlight"/>
+            <field name="redeemed_on">2026-07-28</field>
+            <field name="points_spent">250</field>
+        </record>
+        <record id="redemption_sara_wellness" model="esg.reward.redemption">
+            <field name="employee_id" ref="employee_sara"/>
+            <field name="reward_id" ref="reward_wellness_day"/>
+            <field name="redeemed_on">2026-07-29</field>
+            <field name="points_spent">220</field>
+        </record>
+
+        <!-- Policies and Acknowledgements -->
+        <record id="policy_supplier_code" model="esg.policy">
+            <field name="name">Supplier Sustainability Code</field>
+            <field name="code">POL-SUP-001</field>
+            <field name="category">environmental</field>
+            <field name="description">Supplier expectations for emissions, labor, and waste management.</field>
+            <field name="effective_date">2026-07-01</field>
+            <field name="state">active</field>
+        </record>
+        <record id="policy_waste_handling" model="esg.policy">
+            <field name="name">Waste Handling Standard</field>
+            <field name="code">POL-WST-002</field>
+            <field name="category">environmental</field>
+            <field name="description">Procedure for segregation, storage, and disposal of office and factory waste.</field>
+            <field name="effective_date">2026-07-05</field>
+            <field name="state">active</field>
+        </record>
+        <record id="policy_inclusion" model="esg.policy">
+            <field name="name">Inclusive Workplace Policy</field>
+            <field name="code">POL-SOC-003</field>
+            <field name="category">social</field>
+            <field name="description">Guidelines for equitable hiring, conduct, and participation.</field>
+            <field name="effective_date">2026-07-10</field>
+            <field name="state">active</field>
+        </record>
+        <record id="policy_audit_readiness" model="esg.policy">
+            <field name="name">Audit Readiness Policy</field>
+            <field name="code">POL-GOV-004</field>
+            <field name="category">governance</field>
+            <field name="description">Evidence management rules for ESG audit preparation.</field>
+            <field name="effective_date">2026-07-12</field>
+            <field name="state">active</field>
+        </record>
+        <record id="policy_data_ethics" model="esg.policy">
+            <field name="name">ESG Data Ethics Policy</field>
+            <field name="code">POL-GEN-005</field>
+            <field name="category">general</field>
+            <field name="description">Rules for honest ESG measurement, review, and reporting.</field>
+            <field name="effective_date">2026-07-15</field>
+            <field name="state">draft</field>
+        </record>
+
+        <record id="ack_anika_supplier" model="esg.policy.acknowledgement">
+            <field name="policy_id" ref="policy_supplier_code"/>
+            <field name="employee_id" ref="employee_anika"/>
+            <field name="state">acknowledged</field>
+            <field name="acknowledged_date">2026-07-02 09:30:00</field>
+            <field name="due_date">2026-07-20</field>
+        </record>
+        <record id="ack_rohan_waste" model="esg.policy.acknowledgement">
+            <field name="policy_id" ref="policy_waste_handling"/>
+            <field name="employee_id" ref="employee_rohan"/>
+            <field name="state">pending</field>
+            <field name="due_date">2026-08-01</field>
+        </record>
+        <record id="ack_maya_inclusion" model="esg.policy.acknowledgement">
+            <field name="policy_id" ref="policy_inclusion"/>
+            <field name="employee_id" ref="employee_maya"/>
+            <field name="state">acknowledged</field>
+            <field name="acknowledged_date">2026-07-11 10:00:00</field>
+            <field name="due_date">2026-07-25</field>
+        </record>
+        <record id="ack_dev_audit" model="esg.policy.acknowledgement">
+            <field name="policy_id" ref="policy_audit_readiness"/>
+            <field name="employee_id" ref="employee_dev"/>
+            <field name="state">acknowledged</field>
+            <field name="acknowledged_date">2026-07-13 14:00:00</field>
+            <field name="due_date">2026-07-30</field>
+        </record>
+        <record id="ack_sara_ethics" model="esg.policy.acknowledgement">
+            <field name="policy_id" ref="policy_data_ethics"/>
+            <field name="employee_id" ref="employee_sara"/>
+            <field name="state">overdue</field>
+            <field name="due_date">2026-07-20</field>
+            <field name="reminder_sent_count">2</field>
+        </record>
+
+        <!-- Audits and Compliance Issues -->
+        <record id="audit_procurement_supplier" model="esg.audit">
+            <field name="name">AUD/DEMO/001</field>
+            <field name="title">Supplier ESG Evidence Audit</field>
+            <field name="department_id" ref="eco_department_procurement"/>
+            <field name="auditor_id" ref="employee_dev"/>
+            <field name="date">2026-07-18</field>
+            <field name="audit_type">internal</field>
+            <field name="scope">Check supplier declarations and sustainability certificates.</field>
+            <field name="findings">Most high-volume suppliers submitted evidence; two require follow-up.</field>
+            <field name="state">under_review</field>
+        </record>
+        <record id="audit_mfg_energy" model="esg.audit">
+            <field name="name">AUD/DEMO/002</field>
+            <field name="title">Manufacturing Energy Audit</field>
+            <field name="department_id" ref="eco_department_manufacturing"/>
+            <field name="auditor_id" ref="employee_dev"/>
+            <field name="date">2026-07-19</field>
+            <field name="audit_type">internal</field>
+            <field name="scope">Review energy logs, generator fuel, and shutdown routines.</field>
+            <field name="findings">After-hours machine standby usage is higher than expected.</field>
+            <field name="state">in_progress</field>
+        </record>
+        <record id="audit_people_csr" model="esg.audit">
+            <field name="name">AUD/DEMO/003</field>
+            <field name="title">CSR Participation Audit</field>
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="auditor_id" ref="employee_dev"/>
+            <field name="date">2026-07-21</field>
+            <field name="audit_type">internal</field>
+            <field name="scope">Review volunteer participation approvals and proof quality.</field>
+            <field name="findings">Participation records are complete for major events.</field>
+            <field name="state">completed</field>
+        </record>
+        <record id="audit_compliance_policy" model="esg.audit">
+            <field name="name">AUD/DEMO/004</field>
+            <field name="title">Policy Acknowledgement Audit</field>
+            <field name="department_id" ref="eco_department_compliance"/>
+            <field name="auditor_id" ref="employee_dev"/>
+            <field name="date">2026-07-22</field>
+            <field name="audit_type">regulatory</field>
+            <field name="scope">Verify policy acknowledgement coverage for active policies.</field>
+            <field name="findings">One overdue acknowledgement requires escalation.</field>
+            <field name="state">under_review</field>
+        </record>
+        <record id="audit_global_reporting" model="esg.audit">
+            <field name="name">AUD/DEMO/005</field>
+            <field name="title">Quarterly ESG Reporting Review</field>
+            <field name="department_id" ref="eco_department_main"/>
+            <field name="auditor_id" ref="employee_dev"/>
+            <field name="date">2026-07-23</field>
+            <field name="audit_type">external</field>
+            <field name="scope">Review ESG score inputs and reporting assumptions.</field>
+            <field name="findings">Scoring model is documented; carbon data needs broader automation.</field>
+            <field name="state">planned</field>
+        </record>
+
+        <record id="issue_supplier_certificate" model="esg.compliance.issue">
+            <field name="name">CI/DEMO/001</field>
+            <field name="audit_id" ref="audit_procurement_supplier"/>
+            <field name="description">Two critical suppliers have not uploaded current sustainability certificates.</field>
+            <field name="severity">high</field>
+            <field name="owner_id" ref="employee_anika"/>
+            <field name="due_date">2026-08-05</field>
+            <field name="status">open</field>
+        </record>
+        <record id="issue_generator_log" model="esg.compliance.issue">
+            <field name="name">CI/DEMO/002</field>
+            <field name="audit_id" ref="audit_mfg_energy"/>
+            <field name="description">Generator fuel log has missing entries for two shifts.</field>
+            <field name="severity">medium</field>
+            <field name="owner_id" ref="employee_rohan"/>
+            <field name="due_date">2026-08-03</field>
+            <field name="status">in_progress</field>
+        </record>
+        <record id="issue_participation_proof" model="esg.compliance.issue">
+            <field name="name">CI/DEMO/003</field>
+            <field name="audit_id" ref="audit_people_csr"/>
+            <field name="description">One CSR event has incomplete volunteer proof attachments.</field>
+            <field name="severity">low</field>
+            <field name="owner_id" ref="employee_maya"/>
+            <field name="due_date">2026-08-12</field>
+            <field name="status">resolved</field>
+            <field name="resolution_notes">Coordinator uploaded missing attendance sheet.</field>
+        </record>
+        <record id="issue_policy_overdue" model="esg.compliance.issue">
+            <field name="name">CI/DEMO/004</field>
+            <field name="audit_id" ref="audit_compliance_policy"/>
+            <field name="description">One employee has an overdue ESG data ethics acknowledgement.</field>
+            <field name="severity">medium</field>
+            <field name="owner_id" ref="employee_dev"/>
+            <field name="due_date">2026-07-28</field>
+            <field name="status">open</field>
+        </record>
+        <record id="issue_reporting_evidence" model="esg.compliance.issue">
+            <field name="name">CI/DEMO/005</field>
+            <field name="audit_id" ref="audit_global_reporting"/>
+            <field name="description">Carbon transaction source references should be reviewed before quarterly reporting.</field>
+            <field name="severity">critical</field>
+            <field name="owner_id" ref="employee_dev"/>
+            <field name="due_date">2026-08-20</field>
+            <field name="status">open</field>
+        </record>
+
+        <!-- Department Score Snapshots -->
+        <record id="score_procurement_july" model="esg.department.score">
+            <field name="department_id" ref="eco_department_procurement"/>
+            <field name="period_date">2026-07-31</field>
+            <field name="environmental_score">72</field>
+            <field name="social_score">66</field>
+            <field name="governance_score">78</field>
+        </record>
+        <record id="score_manufacturing_july" model="esg.department.score">
+            <field name="department_id" ref="eco_department_manufacturing"/>
+            <field name="period_date">2026-07-31</field>
+            <field name="environmental_score">58</field>
+            <field name="social_score">64</field>
+            <field name="governance_score">70</field>
+        </record>
+        <record id="score_people_july" model="esg.department.score">
+            <field name="department_id" ref="eco_department_people"/>
+            <field name="period_date">2026-07-31</field>
+            <field name="environmental_score">69</field>
+            <field name="social_score">88</field>
+            <field name="governance_score">74</field>
+        </record>
+        <record id="score_compliance_july" model="esg.department.score">
+            <field name="department_id" ref="eco_department_compliance"/>
+            <field name="period_date">2026-07-31</field>
+            <field name="environmental_score">82</field>
+            <field name="social_score">60</field>
+            <field name="governance_score">86</field>
+        </record>
+        <record id="score_global_july" model="esg.department.score">
+            <field name="department_id" ref="eco_department_main"/>
+            <field name="period_date">2026-07-31</field>
+            <field name="environmental_score">75</field>
+            <field name="social_score">71</field>
+            <field name="governance_score">80</field>
+        </record>
+    </data>
 </odoo>

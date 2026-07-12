@@ -20,5 +20,29 @@
             <field name="rarity">epic</field>
         </record>
 
+        <record id="badge_streak_builder" model="esg.badge">
+            <field name="name">Streak Builder</field>
+            <field name="description">Awarded for staying active for 3 consecutive weeks.</field>
+            <field name="unlock_rule">streak</field>
+            <field name="unlock_value">3</field>
+            <field name="rarity">common</field>
+        </record>
+
+        <record id="badge_impact_star" model="esg.badge">
+            <field name="name">Impact Star</field>
+            <field name="description">Awarded for maintaining a strong average CSR impact score.</field>
+            <field name="unlock_rule">impact_score_avg</field>
+            <field name="unlock_value">8</field>
+            <field name="rarity">rare</field>
+        </record>
+
+        <record id="badge_department_champion" model="esg.badge">
+            <field name="name">Department Champion</field>
+            <field name="description">Awarded to the top XP contributor in a department.</field>
+            <field name="unlock_rule">department_champion</field>
+            <field name="unlock_value">1</field>
+            <field name="rarity">legendary</field>
+        </record>
+
     </data>
 </odoo>

@@ -43,11 +43,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Data rows will be piped in here based on the final database queries -->
-                                <tr>
-                                    <td>Sample Metric (Waiting on backend data)</td>
-                                    <td>-</td>
-                                    <td>-</td>
+                                <tr t-foreach="o._get_report_rows()" t-as="row">
+                                    <td>
+                                        <span t-esc="row['module']"/> - <span t-esc="row['metric']"/>
+                                    </td>
+                                    <td><span t-esc="row['value']"/></td>
+                                    <td><span t-esc="row['target']"/></td>
                                 </tr>
                             </tbody>
                         </table>

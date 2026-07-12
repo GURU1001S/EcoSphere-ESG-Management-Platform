@@ -57,6 +57,8 @@ class EcoReward(models.Model):
         employee = self.env['hr.employee'].browse(employee_id) if employee_id else self.env.user.employee_id
         if not employee.exists():
             raise UserError("Employee not found.")
+        if not self._is_available_for_employee(employee):
+            raise UserError("This reward is not currently available for this employee's engagement profile.")
             
         if self.status == 'out_of_stock' or self.stock <= 0:
             raise UserError("This reward is currently out of stock.")
@@ -92,3 +94,18 @@ class EcoReward(models.Model):
         
         self.message_post(body=f"Reward redeemed by {employee.name} for {points_cost} points.")
         return True
+
+    def _is_available_for_employee(self, employee):
+        self.ensure_one()
+        if self.target_sentiment == 'all':
+            return True
+        if self.target_sentiment == 'struggling':
+            return employee.sentiment_tag in ('inactive', 'struggling')
+        if self.target_sentiment == 'high_performer':
+            return employee.sentiment_tag in ('motivated', 'champion')
+        return True
+
+    @api.model
+    def get_available_rewards_for_employee(self, employee):
+        rewards = self.search([('status', '=', 'available'), ('stock', '>', 0)])
+        return rewards.filtered(lambda reward: reward._is_available_for_employee(employee))

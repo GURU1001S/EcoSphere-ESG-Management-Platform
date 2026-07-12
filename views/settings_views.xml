@@ -21,6 +21,17 @@
                             <field name="eco_policy_reminders"/>
                         </setting>
                     </block>
+                    <block title="ESG Score Weights" name="eco_score_weights">
+                        <setting string="Environmental Weight" help="Percentage weight used in total ESG score.">
+                            <field name="eco_weight_environmental"/>
+                        </setting>
+                        <setting string="Social Weight" help="Percentage weight used in total ESG score.">
+                            <field name="eco_weight_social"/>
+                        </setting>
+                        <setting string="Governance Weight" help="Percentage weight used in total ESG score.">
+                            <field name="eco_weight_governance"/>
+                        </setting>
+                    </block>
                 </app>
             </xpath>
         </field>

@@ -19,3 +19,18 @@ class ResConfigSettings(models.TransientModel):
         string="Automated Policy Reminders",
         config_parameter='ecosphere.policy_reminders'
     )
+    eco_weight_environmental = fields.Float(
+        string="Environmental Weight (%)",
+        default=40.0,
+        config_parameter='ecosphere.weight_environmental'
+    )
+    eco_weight_social = fields.Float(
+        string="Social Weight (%)",
+        default=30.0,
+        config_parameter='ecosphere.weight_social'
+    )
+    eco_weight_governance = fields.Float(
+        string="Governance Weight (%)",
+        default=30.0,
+        config_parameter='ecosphere.weight_governance'
+    )

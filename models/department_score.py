@@ -44,12 +44,24 @@ class DepartmentScore(models.Model):
 
     @api.model
     def _compute_environmental_score(self, department):
-        """Averages goal status mapped to a score (achieved=100, on_track=60, at_risk=20)."""
+        """Score emissions against department goals, with status as fallback."""
         Goal = self.env['esg.environmental.goal']
+        Carbon = self.env['carbon.transaction']
         goals = Goal.search([('department_id', '=', department.id)])
         if not goals:
             return 0.0
-        scores = [GOAL_STATUS_SCORE.get(g.status, 0.0) for g in goals]
+
+        scores = []
+        for goal in goals:
+            domain = [('department_id', '=', department.id)]
+            if goal.deadline:
+                domain.append(('date', '<=', goal.deadline))
+            emissions = sum(Carbon.search(domain).mapped('total_emission'))
+            if goal.target_emission > 0:
+                ratio = emissions / goal.target_emission
+                scores.append(max(0.0, min(100.0, 100.0 - (ratio * 100.0))))
+            else:
+                scores.append(GOAL_STATUS_SCORE.get(goal.status, 0.0))
         return sum(scores) / len(scores) if scores else 0.0
 
     @api.model

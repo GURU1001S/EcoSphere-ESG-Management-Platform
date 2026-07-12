@@ -143,7 +143,7 @@ class EcoChallengeParticipation(models.Model):
             
             # Badge unlock routine
             config = self.env['ir.config_parameter'].sudo()
-            auto_award = config.get_param('ecosphere.badge_auto_award', False)
+            auto_award = config.get_param('ecosphere.badge_auto_award', False) == 'True'
             
             if auto_award:
                 unlocked_badges = self.env['esg.badge'].search([('employee_ids', '!=', self.employee_id.id)])

@@ -7,6 +7,7 @@
     'author': 'Team EcoSphere',
     'depends': [
         'base',
+        'web',
         'hr',
         'purchase',
         'account',
@@ -35,6 +36,11 @@
         'report/esg_reports.xml',
     ],
     'demo': [],
+    'assets': {
+        'web.assets_backend': [
+            'ecosphere/static/src/scss/ecosphere_backend.scss',
+        ],
+    },
     'installable': True,
     'application': True,
     'license': 'LGPL-3',

@@ -57,6 +57,8 @@ class PolicyAcknowledgement(models.Model):
 
     @api.model
     def _cron_flag_overdue(self):
+        if self.env['ir.config_parameter'].sudo().get_param('ecosphere.policy_reminders') != 'True':
+            return
         today = fields.Date.today()
         overdue = self.search([
             ('state', '=', 'pending'),

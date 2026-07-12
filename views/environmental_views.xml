@@ -1,20 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- Emission Factors -->
+    <record id="view_eco_emission_factor_tree" model="ir.ui.view">
+        <field name="name">esg.emission.factor.tree</field>
+        <field name="model">esg.emission.factor</field>
+        <field name="arch" type="xml">
+            <tree string="Emission Factors" default_order="name">
+                <field name="name"/>
+                <field name="factor_value" sum="Total Factor"/>
+                <field name="unit_of_measure"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eco_emission_factor_form" model="ir.ui.view">
+        <field name="name">esg.emission.factor.form</field>
+        <field name="model">esg.emission.factor</field>
+        <field name="arch" type="xml">
+            <form string="Emission Factor">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Grid Electricity"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="factor_value"/>
+                        </group>
+                        <group>
+                            <field name="unit_of_measure"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eco_emission_factor_search" model="ir.ui.view">
+        <field name="name">esg.emission.factor.search</field>
+        <field name="model">esg.emission.factor</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="unit_of_measure"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Environmental Goals -->
+    <record id="view_eco_environmental_goal_tree" model="ir.ui.view">
+        <field name="name">esg.environmental.goal.tree</field>
+        <field name="model">esg.environmental.goal</field>
+        <field name="arch" type="xml">
+            <tree string="Environmental Goals" decoration-success="status == 'achieved'" decoration-warning="status == 'at_risk'">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="target_emission"/>
+                <field name="deadline"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'achieved'"
+                       decoration-warning="status == 'at_risk'"
+                       decoration-info="status == 'on_track'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eco_environmental_goal_kanban" model="ir.ui.view">
+        <field name="name">esg.environmental.goal.kanban</field>
+        <field name="model">esg.environmental.goal</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_ecosphere_kanban">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="target_emission"/>
+                <field name="deadline"/>
+                <field name="status"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_ecosphere_kpi_card o_ecosphere_card_env">
+                            <div class="o_ecosphere_card_header">
+                                <strong><field name="name"/></strong>
+                                <field name="status" widget="badge"/>
+                            </div>
+                            <div class="text-muted"><field name="department_id"/></div>
+                            <div class="o_ecosphere_metric_row">
+                                <div>
+                                    <span class="o_ecosphere_metric_value"><field name="target_emission"/></span>
+                                    <span class="o_ecosphere_metric_label">Target CO2e</span>
+                                </div>
+                                <div>
+                                    <span class="o_ecosphere_metric_value"><field name="deadline"/></span>
+                                    <span class="o_ecosphere_metric_label">Deadline</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_eco_environmental_goal_form" model="ir.ui.view">
+        <field name="name">esg.environmental.goal.form</field>
+        <field name="model">esg.environmental.goal</field>
+        <field name="arch" type="xml">
+            <form string="Environmental Goal">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Goal name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="department_id"/>
+                            <field name="target_emission"/>
+                        </group>
+                        <group>
+                            <field name="deadline"/>
+                            <field name="status" widget="radio"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eco_environmental_goal_search" model="ir.ui.view">
+        <field name="name">esg.environmental.goal.search</field>
+        <field name="model">esg.environmental.goal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="department_id"/>
+                <filter string="On Track" name="on_track" domain="[('status','=','on_track')]"/>
+                <filter string="At Risk" name="at_risk" domain="[('status','=','at_risk')]"/>
+                <filter string="Achieved" name="achieved" domain="[('status','=','achieved')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Deadline" name="group_deadline" context="{'group_by': 'deadline'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Carbon Transactions -->
+    <record id="view_eco_carbon_transaction_tree" model="ir.ui.view">
+        <field name="name">carbon.transaction.tree</field>
+        <field name="model">carbon.transaction</field>
+        <field name="arch" type="xml">
+            <tree string="Carbon Transactions" default_order="date desc" decoration-info="source_type == 'purchase'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="department_id"/>
+                <field name="emission_factor_id"/>
+                <field name="source_type" widget="badge"/>
+                <field name="source_ref"/>
+                <field name="quantity" sum="Total Quantity"/>
+                <field name="total_emission" sum="Total Emissions"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_eco_carbon_transaction_form" model="ir.ui.view">
+        <field name="name">carbon.transaction.form</field>
+        <field name="model">carbon.transaction</field>
+        <field name="arch" type="xml">
+            <form string="Carbon Transaction">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="department_id"/>
+                            <field name="emission_factor_id"/>
+                        </group>
+                        <group>
+                            <field name="source_type" widget="radio"/>
+                            <field name="source_ref" readonly="1"/>
+                            <field name="quantity"/>
+                            <field name="total_emission" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_eco_carbon_transaction_search" model="ir.ui.view">
+        <field name="name">carbon.transaction.search</field>
+        <field name="model">carbon.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="source_ref"/>
+                <field name="department_id"/>
+                <field name="emission_factor_id"/>
+                <filter string="Manual" name="manual" domain="[('source_type','=','manual')]"/>
+                <filter string="Purchase" name="purchase" domain="[('source_type','=','purchase')]"/>
+                <filter string="Manufacturing" name="manufacturing" domain="[('source_type','=','manufacturing')]"/>
+                <filter string="Expense" name="expense" domain="[('source_type','=','expense')]"/>
+                <filter string="Fleet" name="fleet" domain="[('source_type','=','fleet')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Source" name="group_source" context="{'group_by': 'source_type'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="action_eco_emission_factor" model="ir.actions.act_window">
         <field name="name">Emission Factors</field>
         <field name="res_model">esg.emission.factor</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_eco_emission_factor_search"/>
     </record>
+
     <record id="action_eco_environmental_goal" model="ir.actions.act_window">
         <field name="name">Environmental Goals</field>
         <field name="res_model">esg.environmental.goal</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_eco_environmental_goal_search"/>
+        <field name="context">{'search_default_on_track': 1}</field>
     </record>
+
     <record id="action_eco_carbon_transaction" model="ir.actions.act_window">
         <field name="name">Carbon Transactions</field>
         <field name="res_model">carbon.transaction</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_eco_carbon_transaction_search"/>
     </record>
+
     <menuitem id="menu_eco_environmental_items" name="Environmental Records" parent="menu_eco_environmental" sequence="1"/>
     <menuitem id="menu_eco_emission_factors" name="Emission Factors" parent="menu_eco_environmental_items" action="action_eco_emission_factor" sequence="1"/>
     <menuitem id="menu_eco_goals" name="Goals" parent="menu_eco_environmental_items" action="action_eco_environmental_goal" sequence="2"/>

@@ -1,0 +1,76 @@
+.o_ecosphere_dashboard,
+.o_ecosphere_kanban {
+    --eco-green: #23a455;
+    --eco-blue: #1f7dd8;
+    --eco-purple: #7048e8;
+    --eco-orange: #f76707;
+    --eco-ink: #2f3a43;
+    --eco-line: #d9e2ea;
+}
+
+.o_ecosphere_dashboard .o_kanban_renderer,
+.o_ecosphere_kanban .o_kanban_renderer {
+    gap: 12px;
+}
+
+.o_ecosphere_kpi_card {
+    border: 1px solid var(--eco-line);
+    border-left: 4px solid var(--eco-blue);
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(47, 58, 67, 0.08);
+    min-height: 132px;
+    padding: 14px;
+}
+
+.o_ecosphere_card_env {
+    border-left-color: var(--eco-green);
+}
+
+.o_ecosphere_card_header {
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.o_ecosphere_metric_row {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 12px;
+}
+
+.o_ecosphere_metric_value {
+    color: var(--eco-ink);
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    min-height: 22px;
+}
+
+.o_ecosphere_metric_label {
+    color: #6b7785;
+    display: block;
+    font-size: 11px;
+    line-height: 1.25;
+    margin-top: 3px;
+    text-transform: uppercase;
+}
+
+.o_ecosphere_dashboard .o_kanban_group:nth-child(4n + 1) .o_ecosphere_kpi_card {
+    border-left-color: var(--eco-green);
+}
+
+.o_ecosphere_dashboard .o_kanban_group:nth-child(4n + 2) .o_ecosphere_kpi_card {
+    border-left-color: var(--eco-blue);
+}
+
+.o_ecosphere_dashboard .o_kanban_group:nth-child(4n + 3) .o_ecosphere_kpi_card {
+    border-left-color: var(--eco-purple);
+}
+
+.o_ecosphere_dashboard .o_kanban_group:nth-child(4n + 4) .o_ecosphere_kpi_card {
+    border-left-color: var(--eco-orange);
+}

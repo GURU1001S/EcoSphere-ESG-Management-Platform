@@ -34,6 +34,17 @@
             <field name="active" eval="True"/>
         </record>
 
+        <record id="ir_cron_auto_award_badges" model="ir.cron">
+            <field name="name">EcoSphere: Auto-Award Badges</field>
+            <field name="model_id" ref="model_esg_badge"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_award_badges()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
         <record id="seq_esg_audit" model="ir.sequence">
             <field name="name">ESG Audit Sequence</field>
             <field name="code">esg.audit</field>

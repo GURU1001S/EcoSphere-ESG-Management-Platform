@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <menuitem id="menu_eco_root" name="EcoSphere" sequence="10"/>
+    <menuitem id="menu_eco_root" name="EcoSphere" sequence="10" web_icon="ecosphere,static/description/icon.png"/>
     <menuitem id="menu_eco_environmental" name="Environmental" parent="menu_eco_root" sequence="1"/>
     <menuitem id="menu_eco_social" name="Social" parent="menu_eco_root" sequence="2"/>
     <menuitem id="menu_eco_governance" name="Governance" parent="menu_eco_root" sequence="3"/>

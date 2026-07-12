@@ -60,8 +60,7 @@ class EcoBadge(models.Model):
             return employee.completed_challenge_count >= self.unlock_value
             
         elif self.unlock_rule == 'streak':
-            # TODO: Implement streak logic (N consecutive weeks active)
-            return False
+            return employee.streak >= self.unlock_value
             
         elif self.unlock_rule == 'category_specialist':
             approved_parts = employee.challenge_participation_ids.filtered(lambda p: p.approval_status == 'approved')
@@ -75,8 +74,14 @@ class EcoBadge(models.Model):
             return False
             
         elif self.unlock_rule == 'impact_score_avg':
-            # Offline impact score logic checking
-            return False
+            participations = self.env['esg.employee.participation'].search([
+                ('employee_id', '=', employee.id),
+                ('approval_status', '=', 'approved'),
+            ])
+            if not participations:
+                return False
+            avg_score = sum(participations.mapped('ai_impact_score')) / len(participations)
+            return avg_score >= self.unlock_value
             
         elif self.unlock_rule == 'early_adopter':
             # Note: "first 10" tracking logic is implemented separately, inline, in 
@@ -91,3 +96,14 @@ class EcoBadge(models.Model):
             return employee.xp >= max_xp and employee.xp > 0
             
         return False
+
+    @api.model
+    def _cron_auto_award_badges(self):
+        if self.env['ir.config_parameter'].sudo().get_param('ecosphere.badge_auto_award') != 'True':
+            return
+        employees = self.env['hr.employee'].search([])
+        badges = self.search([])
+        for employee in employees:
+            for badge in badges:
+                if employee.id not in badge.employee_ids.ids and badge.check_unlock(employee):
+                    badge.employee_ids = [(4, employee.id)]

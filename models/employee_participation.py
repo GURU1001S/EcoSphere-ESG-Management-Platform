@@ -74,7 +74,7 @@ class EcoEmployeeParticipation(models.Model):
         
         # 1. Config Toggle Check
         config = self.env['ir.config_parameter'].sudo()
-        evidence_required = config.get_param('ecosphere.evidence_required', False)
+        evidence_required = config.get_param('ecosphere.evidence_required', False) == 'True'
         
         if evidence_required and not self.proof:
             raise ValidationError("Evidence (proof) is strictly required for approval per company settings. Please upload a file before approving.")

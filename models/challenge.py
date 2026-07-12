@@ -220,7 +220,23 @@ class HrEmployee(models.Model):
 
     def _compute_archetype(self):
         for emp in self:
-            emp.sustainability_archetype = "The Contributor"
+            approved = emp.challenge_participation_ids.filtered(lambda p: p.approval_status == 'approved')
+            if not approved:
+                emp.sustainability_archetype = "The Quiet Contributor"
+            elif emp.streak >= 3:
+                emp.sustainability_archetype = "The Sprint Hero"
+            elif emp.strongest_pillar:
+                emp.sustainability_archetype = "The Category Specialist"
+            elif emp.esg_department_id:
+                dept_employees = self.env['hr.employee'].search([
+                    ('esg_department_id', '=', emp.esg_department_id.id)
+                ])
+                max_xp = max(dept_employees.mapped('xp') or [0])
+                emp.sustainability_archetype = (
+                    "The Department Anchor" if emp.xp >= max_xp and emp.xp > 0 else "The Contributor"
+                )
+            else:
+                emp.sustainability_archetype = "The Contributor"
 
     @api.depends('challenge_participation_ids.approval_status')
     def _compute_completed_challenge_count(self):
@@ -272,13 +288,41 @@ class HrEmployee(models.Model):
                 
             if not available:
                 raise UserError("No active challenges available to recommend.")
-                
-            # Local recommendation: pick up to 3 random available challenges
-            import random
-            available_list = available.ids
-            random.shuffle(available_list)
-            data = available_list[:3]
-                
+
+            pillar = emp.strongest_pillar
+            if not pillar and emp.esg_department_id:
+                score = self.env['esg.department.score'].search([
+                    ('department_id', '=', emp.esg_department_id.id)
+                ], order='period_date desc', limit=1)
+                if score:
+                    pillars = {
+                        'environmental': score.environmental_score,
+                        'social': score.social_score,
+                        'governance': score.governance_score,
+                    }
+                    pillar = min(pillars, key=pillars.get)
+
+            preferred_difficulty = {
+                'inactive': 'easy',
+                'struggling': 'easy',
+                'consistent': 'medium',
+                'motivated': 'medium',
+                'champion': 'hard',
+            }.get(emp.sentiment_tag, 'easy')
+
+            def challenge_score(challenge):
+                score = 0
+                if challenge.difficulty == preferred_difficulty:
+                    score += 3
+                if pillar and challenge.category_id and challenge.category_id.type == 'challenge':
+                    text = f"{challenge.name} {challenge.description or ''} {challenge.category_id.name or ''}".lower()
+                    if pillar in text:
+                        score += 4
+                if emp.esg_department_id and challenge.department_id == emp.esg_department_id:
+                    score += 2
+                return score
+
+            data = available.sorted(key=challenge_score, reverse=True)[:3].ids
             emp.recommended_challenge_ids = [(6, 0, data)]
             
         return True

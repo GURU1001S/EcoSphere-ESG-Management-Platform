@@ -22,8 +22,13 @@ class CarbonTransaction(models.Model):
     source_type = fields.Selection([
         ('manual', 'Manual'),
         ('purchase', 'Purchase Order'),
-        ('expense', 'Expense')
+        ('manufacturing', 'Manufacturing'),
+        ('expense', 'Expense'),
+        ('fleet', 'Fleet')
     ], string="Source Type", default='manual', required=True, tracking=True)
+    source_ref = fields.Char(string="Source Reference", readonly=True, tracking=True)
+    source_model = fields.Char(string="Source Model", readonly=True)
+    source_res_id = fields.Integer(string="Source Record ID", readonly=True)
 
     @api.depends("quantity", "emission_factor_id")
     def _compute_emission(self):
