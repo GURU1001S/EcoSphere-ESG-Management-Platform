@@ -6,13 +6,13 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 class EcoCSRActivity(models.Model):
-    _name = 'eco.csr.activity'
+    _name = 'esg.csr.activity'
     _description = 'CSR Activity'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Title', required=True, tracking=True)
     description = fields.Text(string='Description')
-    department_id = fields.Many2one('eco.department', string='Sponsoring Department')
+    department_id = fields.Many2one('esg.department', string='Sponsoring Department')
     
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
@@ -26,7 +26,7 @@ class EcoCSRActivity(models.Model):
     
     points_reward = fields.Integer(string='Base Points Reward', default=0)
     
-    participation_ids = fields.One2many('eco.employee.participation', 'activity_id', string='Participations')
+    participation_ids = fields.One2many('esg.employee.participation', 'activity_id', string='Participations')
     
     target_sdg = fields.Selection([
         ('sdg1', 'SDG 1 - No Poverty'),
@@ -75,17 +75,17 @@ class EcoCSRActivity(models.Model):
     @api.depends('participant_count', 'department_id')
     def _compute_participation_rate(self):
         """
-        Safely computes participation rate. 
-        Uses try/except to guard against department_id not having employee_count
-        if Person A hasn't built that field on eco.department yet!
+        Dynamically computes participation rate based on actual employees in the department.
         """
         for rec in self:
-            try:
-                if rec.department_id and hasattr(rec.department_id, 'employee_count') and rec.department_id.employee_count > 0:
-                    rec.participation_rate = rec.participant_count / rec.department_id.employee_count
+            if rec.department_id:
+                # Count employees in this ESG department
+                emp_count = self.env['hr.employee'].search_count([('esg_department_id', '=', rec.department_id.id)])
+                if emp_count > 0:
+                    rec.participation_rate = rec.participant_count / emp_count
                 else:
                     rec.participation_rate = 0.0
-            except AttributeError:
+            else:
                 rec.participation_rate = 0.0
                 
     # State transition buttons
@@ -104,54 +104,18 @@ class EcoCSRActivity(models.Model):
             rec._generate_ai_summary()
             
     def _generate_ai_summary(self):
-        """AI Feature 3: Gathers all self-reported impacts and generates a 3-sentence summary using Grok."""
-        self.ensure_one()
+        """Generates a local summary of participant self-reported impacts."""
+        participations = self.participation_ids.filtered(lambda p: p.approval_status == 'approved' and p.self_reported_impact)
+        impact_texts = participations.mapped('self_reported_impact')
         
-        # 1. Gather all approved impacts
-        approved_parts = self.participation_ids.filtered(lambda p: p.approval_status == 'approved' and p.self_reported_impact)
-        impact_texts = [p.self_reported_impact for p in approved_parts]
-        
-        # 2. Guard against empty lists to save API calls
         if not impact_texts:
-            self.message_post(body="✅ Activity marked as completed. *(AI Summary skipped: No self-reported impact data was provided by participants)*")
+            self.message_post(body="✅ Activity marked as completed. *(Summary skipped: No self-reported impact data was provided by participants)*")
             return
             
-        combined_text = "\n".join(f"- {text}" for text in impact_texts)
+        # Take up to 5 most recent impacts
+        recent_texts = impact_texts[:5]
+        combined_text = "<br/>".join(f"- {text}" for text in recent_texts)
         
-        # 3. Formulate the precise 3-sentence prompt
-        prompt = (
-            f"You are an ESG analyst. We just finished the CSR activity '{self.name}'. "
-            f"Here are the impact descriptions provided by the participants:\n"
-            f"{combined_text}\n\n"
-            f"Write a concise, exactly 3-sentence summary of the overall impact achieved. "
-            f"Do not include quotes, markdown fences, or any other introductory text."
-        )
-        
-        api_key = self.env['ir.config_parameter'].sudo().get_param('ecosphere.grok_api_key')
-        if not api_key:
-            self.message_post(body="✅ Activity completed. *(AI Summary skipped: Missing API Key)*")
-            return
-        url = "https://api.groq.com/openai/v1/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "llama-3.1-8b-instant",
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.5
-        }
-        
-        try:
-            import requests
-            response = requests.post(url, headers=headers, json=payload, timeout=12)
-            response.raise_for_status()
-            res_text = response.json()['choices'][0]['message']['content'].strip()
-            
-            # 4. Save and announce
-            self.ai_summary = res_text
-            self.message_post(body=f"<b>🤖 AI Impact Summary:</b><br/>{res_text}")
-            
-        except Exception as e:
-            _logger.error(f"AI Summary generation failed: {str(e)}")
-            self.message_post(body="✅ Activity completed. *(AI Summary generation failed)*")
+        res_text = "Overall Impact Highlights:<br/>" + combined_text
+        self.ai_summary = res_text
+        self.message_post(body=f"<b>Impact Summary:</b><br/>{res_text}")
