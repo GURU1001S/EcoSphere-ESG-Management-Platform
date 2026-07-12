@@ -111,4 +111,14 @@ class EcoEmployeeParticipation(models.Model):
         if not self.self_reported_impact:
             self.ai_impact_score = 5
             return
+            
+        word_count = len(self.self_reported_impact.split())
+        if word_count > 50:
+            self.ai_impact_score = 10
+        elif word_count > 20:
+            self.ai_impact_score = 8
+        elif word_count > 5:
+            self.ai_impact_score = 6
+        else:
+            self.ai_impact_score = 5
 
