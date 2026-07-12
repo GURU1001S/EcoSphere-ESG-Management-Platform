@@ -1,3 +1,5 @@
+![EcoSphere](https://raw.githubusercontent.com/GURU1001S/EcoSphere-ESG-Management-Platform/main/static/description/icon.png)
+
 # 🌱 EcoSphere — ESG Management Platform
 
 > Enterprise ESG intelligence, built natively inside Odoo 17.
