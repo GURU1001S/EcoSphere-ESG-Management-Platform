@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_eco_policy" model="ir.actions.act_window">
+        <field name="name">Policies</field>
+        <field name="res_model">eco.policy</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_eco_audit" model="ir.actions.act_window">
+        <field name="name">Audits</field>
+        <field name="res_model">eco.audit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_eco_compliance_issue" model="ir.actions.act_window">
+        <field name="name">Compliance Issues</field>
+        <field name="res_model">eco.compliance.issue</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_eco_governance_items" name="Governance Records" parent="menu_eco_governance" sequence="1"/>
+    <menuitem id="menu_eco_policies" name="Policies" parent="menu_eco_governance_items" action="action_eco_policy" sequence="1"/>
+    <menuitem id="menu_eco_audits" name="Audits" parent="menu_eco_governance_items" action="action_eco_audit" sequence="2"/>
+    <menuitem id="menu_eco_compliance" name="Compliance Issues" parent="menu_eco_governance_items" action="action_eco_compliance_issue" sequence="3"/>
+</odoo>

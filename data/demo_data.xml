@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="eco_department_main" model="eco.department">
+        <field name="name">Global Operations</field>
+    </record>
+    <record id="eco_category_energy" model="eco.category">
+        <field name="name">Energy</field>
+        <field name="description">Energy usage and efficiency</field>
+    </record>
+    <record id="eco_challenge_recycle" model="eco.challenge">
+        <field name="name">Recycle More</field>
+        <field name="description">Encourage recycling across offices</field>
+    </record>
+</odoo>

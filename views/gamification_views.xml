@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_eco_challenge" model="ir.actions.act_window">
+        <field name="name">Challenges</field>
+        <field name="res_model">eco.challenge</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_eco_badge" model="ir.actions.act_window">
+        <field name="name">Badges</field>
+        <field name="res_model">eco.badge</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_eco_reward" model="ir.actions.act_window">
+        <field name="name">Rewards</field>
+        <field name="res_model">eco.reward</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_eco_reward_redemption" model="ir.actions.act_window">
+        <field name="name">Reward Redemptions</field>
+        <field name="res_model">eco.reward.redemption</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_eco_gamification_items" name="Gamification Records" parent="menu_eco_gamification" sequence="1"/>
+    <menuitem id="menu_eco_challenges" name="Challenges" parent="menu_eco_gamification_items" action="action_eco_challenge" sequence="1"/>
+    <menuitem id="menu_eco_badges" name="Badges" parent="menu_eco_gamification_items" action="action_eco_badge" sequence="2"/>
+    <menuitem id="menu_eco_rewards" name="Rewards" parent="menu_eco_gamification_items" action="action_eco_reward" sequence="3"/>
+    <menuitem id="menu_eco_redemptions" name="Reward Redemptions" parent="menu_eco_gamification_items" action="action_eco_reward_redemption" sequence="4"/>
+</odoo>

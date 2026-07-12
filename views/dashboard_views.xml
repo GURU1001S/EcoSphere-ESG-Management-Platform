@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_eco_dashboard_form" model="ir.ui.view">
+        <field name="name">eco.dashboard.form</field>
+        <field name="model">eco.department</field>
+        <field name="arch" type="xml">
+            <form string="ESG Dashboard">
+                <sheet>
+                    <group>
+                        <h1>EcoSphere ESG Dashboard</h1>
+                        <div class="o_row">
+                            <div class="o_col">
+                                <field name="name" readonly="1"/>
+                                <field name="score" readonly="1"/>
+                            </div>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
