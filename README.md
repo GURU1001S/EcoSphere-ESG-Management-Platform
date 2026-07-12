@@ -166,7 +166,17 @@ eco.department_score         Aggregated ESG performance per department
 
 ## Installation
 
-**Requirements:** Odoo 17 Community Edition, PostgreSQL 15
+
+**Docker Compose (recommended):**
+
+```bash
+docker-compose up -d
+# Odoo available at localhost:8069
+```
+(Create sample database, login in, enable "Activate Developer Settings", then search for "EcoSphere" in the app section (clear default app search filter, to find custom app from desktop files). Click "Activate".)
+```
+
+**Or with **Requirements:** Odoo 17 Community Edition, PostgreSQL 15**
 
 ```bash
 # 1. Clone the repository
@@ -198,12 +208,6 @@ docker run -d --name odoo \
 # Enable: Auto Emission Calculation, Badge Auto-Award
 ```
 
-**Or with Docker Compose (recommended):**
-
-```bash
-docker-compose up -d
-# Odoo available at localhost:8069
-```
 
 ---
 
@@ -281,6 +285,7 @@ Odoo 17
 ## Team
 
 Built in 8 hours at Odoo Hackathon 2026 by the **EcoSphere Team**.
+(Delayed Final Commits due to Internet Issues)
 
 ---
 
