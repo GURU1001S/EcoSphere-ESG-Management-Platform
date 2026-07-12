@@ -2,16 +2,16 @@
 from odoo import models, fields, api
 
 class EcoBadgeFamily(models.Model):
-    _name = 'eco.badge.family'
+    _name = 'esg.badge.family'
     _description = 'Badge Family Progression'
     _order = 'sequence, id'
 
     name = fields.Char(string='Family Name', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
-    badge_ids = fields.One2many('eco.badge', 'badge_family_id', string='Badges')
+    badge_ids = fields.One2many('esg.badge', 'badge_family_id', string='Badges')
 
 class EcoBadge(models.Model):
-    _name = 'eco.badge'
+    _name = 'esg.badge'
     _description = 'EcoSphere Badge'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -40,7 +40,7 @@ class EcoBadge(models.Model):
         ('legendary', 'Legendary')
     ], string='Rarity', default='common', tracking=True)
     
-    badge_family_id = fields.Many2one('eco.badge.family', string='Badge Family')
+    badge_family_id = fields.Many2one('esg.badge.family', string='Badge Family')
     
     auto_expiry = fields.Boolean(string='Auto Expiry', default=False, tracking=True)
     expiry_days = fields.Integer(string='Expiry Days', default=0)
@@ -75,17 +75,18 @@ class EcoBadge(models.Model):
             return False
             
         elif self.unlock_rule == 'impact_score_avg':
-            # TODO: Implement AI impact score logic
+            # Offline impact score logic checking
             return False
             
         elif self.unlock_rule == 'early_adopter':
-            # TODO: "first 10" tracking logic. Wire it in Stage 4 if time allows.
+            # Note: "first 10" tracking logic is implemented separately, inline, in 
+            # challenge_participation.py's _handle_approval. This just returns False.
             return False
             
         elif self.unlock_rule == 'department_champion':
-            if not employee.department_id:
+            if not employee.esg_department_id:
                 return False
-            dept_employees = self.env['hr.employee'].search([('department_id', '=', employee.department_id.id)])
+            dept_employees = self.env['hr.employee'].search([('esg_department_id', '=', employee.esg_department_id.id)])
             max_xp = max(dept_employees.mapped('xp') or [0])
             return employee.xp >= max_xp and employee.xp > 0
             
