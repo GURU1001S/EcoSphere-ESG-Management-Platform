@@ -8,6 +8,7 @@ from . import csr_activity
 from . import employee_participation
 from . import challenge
 from . import challenge_participation
+from . import hr_employee
 from . import badge
 from . import reward
 from . import reward_redemption

@@ -14,7 +14,7 @@
                     <button name="action_submit" string="Submit for Review" type="object" class="oe_highlight" invisible="status != 'active'"/>
                     <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="status != 'under_review'"/>
                     <button name="action_archive" string="Archive" type="object" invisible="status in ('archived', 'completed')"/>
-                    <field name="status" widget="statusbar" statusbar_visible="draft,active,review,completed"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,active,under_review,completed"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -65,7 +65,7 @@
                 <field name="difficulty"/>
                 <field name="dynamic_xp"/>
                 <field name="deadline"/>
-                <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-success="status == 'active'" decoration-warning="status == 'review'" decoration-muted="status == 'completed'"/>
+                <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-success="status == 'active'" decoration-warning="status == 'under_review'" decoration-muted="status == 'completed'"/>
             </tree>
         </field>
     </record>

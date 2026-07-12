@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import json
 import logging
-import datetime
-import requests
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 
@@ -42,7 +39,13 @@ class EcoChallenge(models.Model):
     dynamic_xp = fields.Integer(string='Dynamic XP', compute='_compute_dynamic_xp', store=True)
     ai_generated = fields.Boolean(string='AI Generated', default=False, tracking=True)
     ai_rationale = fields.Text(string='AI Rationale')
-    recommended_for_ids = fields.Many2many('hr.employee', string='Recommended For')
+    recommended_for_ids = fields.Many2many(
+        'hr.employee',
+        'esg_challenge_recommendation_rel',
+        'challenge_id',
+        'employee_id',
+        string='Recommended For',
+    )
 
     @api.depends('participation_ids.approval_status', 'participation_ids.create_date', 'participation_ids.completion_date')
     def _compute_completion_metrics(self):
@@ -186,143 +189,3 @@ class EcoChallenge(models.Model):
         }
 
 
-class HrEmployee(models.Model):
-    _inherit = 'hr.employee'
-
-    esg_department_id = fields.Many2one('esg.department', string='ESG Department')
-    xp = fields.Integer(string='XP', default=0, tracking=True)
-    points = fields.Integer(string='Points', default=0, tracking=True)
-    badge_ids = fields.Many2many('esg.badge', string='Badges')
-    
-    challenge_participation_ids = fields.One2many('esg.challenge.participation', 'employee_id', string='Participations')
-    
-    # NOTE: These compute fields depend on challenge_participation.py existing!
-    completed_challenge_count = fields.Integer(string='Completed Challenges', compute='_compute_completed_challenge_count', store=True)
-    streak = fields.Integer(string='Streak (Weeks)', compute='_compute_streak', store=True)
-    
-    sentiment_tag = fields.Selection([
-        ('inactive', 'Inactive'),
-        ('struggling', 'Struggling'),
-        ('consistent', 'Consistent'),
-        ('motivated', 'Motivated'),
-        ('champion', 'Champion')
-    ], string='Sentiment Tag', default='inactive', tracking=True)
-    
-    sustainability_archetype = fields.Char(string='Sustainability Archetype', compute='_compute_archetype')
-    
-    strongest_pillar = fields.Selection([
-        ('environmental', 'Environmental'),
-        ('social', 'Social'),
-        ('governance', 'Governance')
-    ], string='Strongest Pillar')
-    
-    recommended_challenge_ids = fields.Many2many('esg.challenge', string='Recommended Challenges')
-
-    def _compute_archetype(self):
-        for emp in self:
-            approved = emp.challenge_participation_ids.filtered(lambda p: p.approval_status == 'approved')
-            if not approved:
-                emp.sustainability_archetype = "The Quiet Contributor"
-            elif emp.streak >= 3:
-                emp.sustainability_archetype = "The Sprint Hero"
-            elif emp.strongest_pillar:
-                emp.sustainability_archetype = "The Category Specialist"
-            elif emp.esg_department_id:
-                dept_employees = self.env['hr.employee'].search([
-                    ('esg_department_id', '=', emp.esg_department_id.id)
-                ])
-                max_xp = max(dept_employees.mapped('xp') or [0])
-                emp.sustainability_archetype = (
-                    "The Department Anchor" if emp.xp >= max_xp and emp.xp > 0 else "The Contributor"
-                )
-            else:
-                emp.sustainability_archetype = "The Contributor"
-
-    @api.depends('challenge_participation_ids.approval_status')
-    def _compute_completed_challenge_count(self):
-        for emp in self:
-            try:
-                emp.completed_challenge_count = len(emp.challenge_participation_ids.filtered(lambda p: p.approval_status == 'approved'))
-            except AttributeError:
-                emp.completed_challenge_count = 0
-
-    @api.depends('challenge_participation_ids.approval_status', 'challenge_participation_ids.completion_date')
-    def _compute_streak(self):
-        for emp in self:
-            try:
-                approved = emp.challenge_participation_ids.filtered(lambda p: p.approval_status == 'approved' and p.completion_date)
-                if not approved:
-                    emp.streak = 0
-                    continue
-                    
-                dates = sorted([p.completion_date for p in approved], reverse=True)
-                
-                streak = 1
-                current_week = dates[0].isocalendar()[1]
-                current_year = dates[0].isocalendar()[0]
-                
-                for d in dates[1:]:
-                    w = d.isocalendar()[1]
-                    y = d.isocalendar()[0]
-                    
-                    if y == current_year and w == current_week:
-                        continue 
-                    elif (y == current_year and w == current_week - 1) or (y == current_year - 1 and current_week == 1 and w in (52, 53)):
-                        streak += 1
-                        current_week = w
-                        current_year = y
-                    else:
-                        break
-                emp.streak = streak
-            except AttributeError:
-                emp.streak = 0
-
-    def action_recommend_challenges(self):
-        for emp in self:
-            active_challenges = self.env['esg.challenge'].search([('status', '=', 'active')])
-            try:
-                completed = emp.challenge_participation_ids.filtered(lambda p: p.approval_status == 'approved').mapped('challenge_id')
-                available = active_challenges - completed
-            except AttributeError:
-                available = active_challenges
-                
-            if not available:
-                raise UserError("No active challenges available to recommend.")
-
-            pillar = emp.strongest_pillar
-            if not pillar and emp.esg_department_id:
-                score = self.env['esg.department.score'].search([
-                    ('department_id', '=', emp.esg_department_id.id)
-                ], order='period_date desc', limit=1)
-                if score:
-                    pillars = {
-                        'environmental': score.environmental_score,
-                        'social': score.social_score,
-                        'governance': score.governance_score,
-                    }
-                    pillar = min(pillars, key=pillars.get)
-
-            preferred_difficulty = {
-                'inactive': 'easy',
-                'struggling': 'easy',
-                'consistent': 'medium',
-                'motivated': 'medium',
-                'champion': 'hard',
-            }.get(emp.sentiment_tag, 'easy')
-
-            def challenge_score(challenge):
-                score = 0
-                if challenge.difficulty == preferred_difficulty:
-                    score += 3
-                if pillar and challenge.category_id and challenge.category_id.type == 'challenge':
-                    text = f"{challenge.name} {challenge.description or ''} {challenge.category_id.name or ''}".lower()
-                    if pillar in text:
-                        score += 4
-                if emp.esg_department_id and challenge.department_id == emp.esg_department_id:
-                    score += 2
-                return score
-
-            data = available.sorted(key=challenge_score, reverse=True)[:3].ids
-            emp.recommended_challenge_ids = [(6, 0, data)]
-            
-        return True

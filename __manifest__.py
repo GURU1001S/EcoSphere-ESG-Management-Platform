@@ -11,6 +11,7 @@
         'hr',
         'purchase',
         'account',
+        'hr_expense',
         'fleet',
         'mrp',
         'mail',

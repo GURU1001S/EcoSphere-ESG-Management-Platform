@@ -31,7 +31,13 @@ class EcoBadge(models.Model):
     
     unlock_value = fields.Integer(string='Unlock Value', default=0, tracking=True)
     
-    employee_ids = fields.Many2many('hr.employee', string='Awarded Employees')
+    employee_ids = fields.Many2many(
+        'hr.employee',
+        'esg_badge_employee_rel',
+        'badge_id',
+        'employee_id',
+        string='Awarded Employees',
+    )
     
     rarity = fields.Selection([
         ('common', 'Common'),

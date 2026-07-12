@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 class PolicyAcknowledgement(models.Model):
     _name = 'esg.policy.acknowledgement'
     _description = 'Employee Policy Acknowledgement'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
     _rec_name = 'policy_id'
 

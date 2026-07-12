@@ -45,7 +45,6 @@
             <field name="xp">420</field>
             <field name="points">260</field>
             <field name="sentiment_tag">motivated</field>
-            <field name="strongest_pillar">environmental</field>
         </record>
         <record id="employee_rohan" model="hr.employee">
             <field name="name">Rohan Mehta</field>
@@ -54,7 +53,6 @@
             <field name="xp">180</field>
             <field name="points">140</field>
             <field name="sentiment_tag">consistent</field>
-            <field name="strongest_pillar">social</field>
         </record>
         <record id="employee_maya" model="hr.employee">
             <field name="name">Maya Iyer</field>
@@ -63,7 +61,6 @@
             <field name="xp">760</field>
             <field name="points">390</field>
             <field name="sentiment_tag">champion</field>
-            <field name="strongest_pillar">social</field>
         </record>
         <record id="employee_dev" model="hr.employee">
             <field name="name">Dev Kulkarni</field>
@@ -72,7 +69,6 @@
             <field name="xp">310</field>
             <field name="points">210</field>
             <field name="sentiment_tag">motivated</field>
-            <field name="strongest_pillar">governance</field>
         </record>
         <record id="employee_sara" model="hr.employee">
             <field name="name">Sara D'Souza</field>
@@ -81,7 +77,6 @@
             <field name="xp">90</field>
             <field name="points">75</field>
             <field name="sentiment_tag">struggling</field>
-            <field name="strongest_pillar">environmental</field>
         </record>
 
         <record id="eco_department_procurement" model="esg.department">
