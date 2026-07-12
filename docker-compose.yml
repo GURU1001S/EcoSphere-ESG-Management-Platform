@@ -7,7 +7,7 @@ services:
     ports:
       - "8069:8069"
     volumes:
-      - ./:/mnt/extra-addons
+      - ./:/mnt/extra-addons/ecosphere
     environment:
       - HOST=db
       - USER=odoo
